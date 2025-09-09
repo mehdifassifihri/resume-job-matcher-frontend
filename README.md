@@ -1,46 +1,145 @@
-# Getting Started with Create React App
+# AI Resume & Job Matcher
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Une interface web premium et moderne pour adapter automatiquement votre CV aux offres d'emploi grâce à l'IA.
 
-## Available Scripts
+## 🚀 Fonctionnalités
 
-In the project directory, you can run:
+- **Upload de fichiers** : Support pour CV (PDF/DOCX) et descriptions de poste
+- **Analyse IA** : Scoring d'adéquation et identification des compétences requises
+- **CV adapté** : Génération automatique d'un CV optimisé pour le poste
+- **Recommandations** : Suggestions d'amélioration personnalisées
+- **Suggestions d'emploi** : Offres d'emploi correspondant à votre profil
+- **Interface moderne** : Design premium avec animations fluides
 
-### `npm start`
+## 🛠️ Technologies utilisées
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- **React 19** avec TypeScript
+- **Tailwind CSS** pour le styling
+- **Framer Motion** pour les animations
+- **Radix UI** pour les composants accessibles
+- **Lucide React** pour les icônes
+- **shadcn/ui** pour les composants UI
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## 🎨 Design System
 
-### `npm test`
+### Palette de couleurs
+- **Primary** : `#7C3AED` (violet)
+- **Accent** : `#06B6D4` (cyan)
+- **Neutral** : `#0B1020`, `#111827`, `#0F172A`
+- **Success** : `#22C55E`
+- **Warning** : `#F59E0B`
+- **Danger** : `#EF4444`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Typographie
+- **Police** : Inter (sans-serif)
+- **Responsive** : Mobile-first avec breakpoints Tailwind
 
-### `npm run build`
+## 📁 Structure du projet
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```
+src/
+├── components/
+│   ├── ui/           # Composants UI de base (shadcn/ui)
+│   ├── Header.tsx    # En-tête avec navigation
+│   ├── HeroUpload.tsx # Section principale avec upload
+│   ├── HowItWorks.tsx # Explication du processus
+│   ├── ResultPanel.tsx # Affichage des résultats
+│   ├── JobSuggestions.tsx # Suggestions d'emploi
+│   └── Footer.tsx    # Pied de page
+├── lib/
+│   ├── utils.ts      # Fonctions utilitaires
+│   └── mock.ts       # Données mock
+├── pages/
+│   └── App.tsx       # Composant principal
+└── App.tsx           # Point d'entrée
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🚀 Installation et démarrage
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. **Cloner le projet**
+```bash
+git clone <repository-url>
+cd resume-jobmatcher
+```
 
-### `npm run eject`
+2. **Installer les dépendances**
+```bash
+npm install
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+3. **Démarrer l'application**
+```bash
+npm start
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+L'application sera accessible sur `http://localhost:3000`
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## 🎯 Utilisation
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+1. **Upload des fichiers** : Glissez-déposez votre CV et l'offre d'emploi
+2. **Analyse** : Cliquez sur "Adapter le CV" pour lancer l'analyse IA
+3. **Résultats** : Consultez votre score d'adéquation et les recommandations
+4. **CV adapté** : Téléchargez ou copiez le CV optimisé
+5. **Suggestions** : Découvrez des offres d'emploi correspondantes
 
-## Learn More
+## 🔧 Configuration
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Tailwind CSS
+Le fichier `tailwind.config.js` contient la configuration personnalisée avec :
+- Palette de couleurs personnalisée
+- Animations CSS personnalisées
+- Police Inter configurée
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Composants UI
+Tous les composants UI sont basés sur shadcn/ui et personnalisés avec :
+- Styles cohérents avec le design system
+- Support complet de l'accessibilité
+- Animations Framer Motion intégrées
+
+## 📱 Responsive Design
+
+L'application est entièrement responsive avec :
+- **Mobile-first** : Optimisé pour les petits écrans
+- **Breakpoints** : sm, md, lg, xl
+- **Navigation** : Adaptée selon la taille d'écran
+- **Grilles** : Flexibles et adaptatives
+
+## ♿ Accessibilité
+
+- **ARIA labels** : Tous les éléments interactifs sont labellisés
+- **Focus states** : Indicateurs visuels pour la navigation clavier
+- **Contrastes** : Respect des standards WCAG AA+
+- **Navigation clavier** : Support complet du clavier
+
+## 🎨 Animations
+
+- **Framer Motion** : Animations fluides et performantes
+- **Micro-interactions** : Feedback visuel sur les interactions
+- **Transitions** : Apparitions progressives des sections
+- **Hover effects** : Effets au survol des éléments
+
+## 🔮 Fonctionnalités futures
+
+- [ ] Mode sombre/clair
+- [ ] Export PDF avancé
+- [ ] Historique des analyses
+- [ ] Intégration API réelle
+- [ ] Support multilingue
+- [ ] Dashboard utilisateur
+
+## 📄 Licence
+
+Ce projet est sous licence MIT.
+
+## 🤝 Contribution
+
+Les contributions sont les bienvenues ! N'hésitez pas à :
+1. Fork le projet
+2. Créer une branche feature
+3. Commiter vos changements
+4. Pousser vers la branche
+5. Ouvrir une Pull Request
+
+---
+
+**Développé avec ❤️ pour optimiser votre recherche d'emploi**
