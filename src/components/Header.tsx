@@ -1,15 +1,10 @@
 import { Button } from "./ui/button"
 import { ThemeToggle } from "./ui/theme-toggle"
 import { motion, AnimatePresence } from "framer-motion"
-import { Menu, X, Home, Info, DollarSign, User, LogOut } from "lucide-react"
+import { Menu, X, Home, Info, DollarSign } from "lucide-react"
 import { useState, useEffect } from "react"
 
-interface HeaderProps {
-  onLogout?: () => void
-  isAuthenticated?: boolean
-}
-
-export function Header({ onLogout, isAuthenticated }: HeaderProps) {
+export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('home')
 
@@ -109,31 +104,6 @@ export function Header({ onLogout, isAuthenticated }: HeaderProps) {
         {/* Actions Desktop */}
         <div className="hidden md:flex items-center space-x-3">
           <ThemeToggle />
-          
-          {isAuthenticated ? (
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="flex items-center space-x-2 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20"
-                onClick={onLogout}
-              >
-                <LogOut className="h-4 w-4" />
-                <span>Logout</span>
-              </Button>
-            </motion.div>
-          ) : (
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button 
-                variant="outline" 
-                size="sm"
-                className="flex items-center space-x-2 border-primary/20 hover:border-primary/40 hover:bg-primary/5"
-              >
-                <User className="h-4 w-4" />
-                <span>Sign in</span>
-              </Button>
-            </motion.div>
-          )}
         </div>
 
         {/* Menu Mobile Button */}
@@ -186,32 +156,6 @@ export function Header({ onLogout, isAuthenticated }: HeaderProps) {
                 )
               })}
               
-              <div className="pt-2 space-y-2">
-                {isAuthenticated ? (
-                  <motion.div whileHover={{ x: 5 }} whileTap={{ scale: 0.95 }}>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="w-full justify-start space-x-3 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20"
-                      onClick={onLogout}
-                    >
-                      <LogOut className="h-4 w-4" />
-                      <span>Logout</span>
-                    </Button>
-                  </motion.div>
-                ) : (
-                  <motion.div whileHover={{ x: 5 }} whileTap={{ scale: 0.95 }}>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                                              className="w-full justify-start space-x-3 border-primary/20 hover:border-primary/40 hover:bg-primary/5"
-                      >
-                        <User className="h-4 w-4" />
-                        <span>Sign in</span>
-                    </Button>
-                  </motion.div>
-                )}
-              </div>
             </div>
           </motion.div>
         )}

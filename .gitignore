@@ -107,3 +107,4 @@ dependencies.json
 
 # Bundle analyzer
 bundle-analyzer-report.html
+.vercel

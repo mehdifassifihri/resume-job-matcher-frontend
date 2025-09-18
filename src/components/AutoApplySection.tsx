@@ -22,7 +22,7 @@ export function AutoApplySection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-poppins-medium mb-6 bg-blue-50 text-blue-700 border border-blue-200">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-poppins-medium mb-6 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800/30">
             <Zap className="w-4 h-4" />
             Coming Soon
           </div>
@@ -56,8 +56,8 @@ export function AutoApplySection() {
           >
             <div className="space-y-6">
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
-                  <Bot className="w-6 h-6 text-blue-600" />
+                <div className="w-12 h-12 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
+                  <Bot className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div>
                   <h3 className="text-xl font-poppins-semibold mb-2 text-neutral-text-primary">
@@ -70,8 +70,8 @@ export function AutoApplySection() {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
-                  <Zap className="w-6 h-6 text-purple-600" />
+                <div className="w-12 h-12 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center flex-shrink-0">
+                  <Zap className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                 </div>
                 <div>
                   <h3 className="text-xl font-poppins-semibold mb-2 text-neutral-text-primary">
@@ -101,7 +101,7 @@ export function AutoApplySection() {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="relative"
           >
-            <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-8 border border-white/20 shadow-lg">
+            <div className="bg-white/50 dark:bg-neutral-surface/80 backdrop-blur-sm rounded-2xl p-8 border border-white/20 dark:border-neutral-border/50 shadow-lg">
               <div className="text-center">
                 <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
                   <Bot className="w-10 h-10 text-white" />
@@ -115,14 +115,14 @@ export function AutoApplySection() {
                 </p>
                 
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between py-2 px-4 bg-green-50 rounded-lg">
-                    <span className="text-sm font-poppins-medium text-green-800">Applications Today</span>
-                    <span className="text-lg font-poppins-bold text-green-600">12</span>
+                  <div className="flex items-center justify-between py-2 px-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800/30">
+                    <span className="text-sm font-poppins-medium text-green-800 dark:text-green-300">Applications Today</span>
+                    <span className="text-lg font-poppins-bold text-green-600 dark:text-green-400">12</span>
                   </div>
                   
-                  <div className="flex items-center justify-between py-2 px-4 bg-blue-50 rounded-lg">
-                    <span className="text-sm font-poppins-medium text-blue-800">Match Rate</span>
-                    <span className="text-lg font-poppins-bold text-blue-600">94%</span>
+                  <div className="flex items-center justify-between py-2 px-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800/30">
+                    <span className="text-sm font-poppins-medium text-blue-800 dark:text-blue-300">Match Rate</span>
+                    <span className="text-lg font-poppins-bold text-blue-600 dark:text-blue-400">94%</span>
                   </div>
                 </div>
               </div>

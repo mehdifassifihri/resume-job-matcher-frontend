@@ -9,7 +9,6 @@ import { Footer } from "../components/Footer"
 import { BackgroundEffects } from "../components/BackgroundEffects"
 import { InteractiveParticles } from "../components/InteractiveParticles"
 import { ColorGradients } from "../components/ColorGradients"
-import { LoginPage } from "../components/LoginPage"
 import { Toaster } from "../components/ui/toaster"
 import { ThemeProvider } from "../contexts/ThemeContext"
 import { calculateMockScore, generateMockRecommendations } from "../lib/utils"
@@ -29,17 +28,9 @@ export function App() {
   const [score, setScore] = useState(0)
   const [coverage, setCoverage] = useState(0)
   const [recommendations, setRecommendations] = useState<string[]>([])
-  const [isAuthenticated, setIsAuthenticated] = useState(true)
   const [apiResponse, setApiResponse] = useState<APIResponse | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  const handleLogin = () => {
-    setIsAuthenticated(true)
-  }
-
-  const handleLogout = () => {
-    setIsAuthenticated(false)
-  }
 
   const handleCVUpload = (content: string) => {
     setCvContent(content)
@@ -99,14 +90,6 @@ export function App() {
     }
   }
 
-  // Show login page if not authenticated
-  if (!isAuthenticated) {
-    return (
-      <ThemeProvider>
-        <LoginPage onLogin={handleLogin} />
-      </ThemeProvider>
-    )
-  }
 
   return (
     <ThemeProvider>
@@ -116,10 +99,7 @@ export function App() {
         <ColorGradients />
         
         <div className="relative z-10">
-          <Header 
-            onLogout={handleLogout}
-            isAuthenticated={isAuthenticated}
-          />
+          <Header />
           
           <main>
             <HeroUpload 
