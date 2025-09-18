@@ -29,7 +29,7 @@ const plans: PricingPlan[] = [
   },
   {
     name: "Pro",
-    price: "$20",
+    price: "$10",
     description: "For serious job seekers",
     features: [
       "Unlimited adaptations",

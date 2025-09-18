@@ -5,9 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
 import { Progress } from "./ui/progress"
 import { Badge } from "./ui/badge"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog"
-import { Copy, Download, FileText, TrendingUp, Target, Lightbulb, BarChart3 } from "lucide-react"
+import { Copy, Download, FileText, TrendingUp, Target, Lightbulb, Palette, Check, X, AlertTriangle, Plus } from "lucide-react"
 import { copyToClipboard, downloadMock, formatPercentage } from "../lib/utils"
 import { useToast } from "./ui/use-toast"
+import { TemplateSystem } from "./TemplateSystem"
+import { APIResponse } from "../lib/api"
 
 interface ResultPanelProps {
   score: number
@@ -15,12 +17,16 @@ interface ResultPanelProps {
   recommendations: string[]
   adaptedCV: string
   isVisible: boolean
+  structuredResume?: any // Add structured resume data
+  apiResponse?: APIResponse | null
+  error?: string | null
 }
 
-export function ResultPanel({ score, coverage, recommendations, adaptedCV, isVisible }: ResultPanelProps) {
+export function ResultPanel({ score, coverage, recommendations, adaptedCV, isVisible, structuredResume, apiResponse, error }: ResultPanelProps) {
   const { toast } = useToast()
   const [isDownloadDialogOpen, setIsDownloadDialogOpen] = useState(false)
   const [downloadType, setDownloadType] = useState<'docx' | 'pdf'>('docx')
+  const [showTemplateSystem, setShowTemplateSystem] = useState(false)
 
   const handleCopy = async () => {
     const success = await copyToClipboard(adaptedCV)
@@ -76,6 +82,30 @@ export function ResultPanel({ score, coverage, recommendations, adaptedCV, isVis
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
     >
+      {/* Error Display */}
+      {error && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-6"
+        >
+          <Card className="bg-red-50 border-red-200">
+            <CardContent className="pt-6">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
+                  <span className="text-red-600 text-sm font-bold">!</span>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-red-800">API Error</h3>
+                  <p className="text-red-700 text-sm">{error}</p>
+                  <p className="text-red-600 text-xs mt-1">Using fallback data for demonstration.</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
+
       {/* Background Effects */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
@@ -101,7 +131,7 @@ export function ResultPanel({ score, coverage, recommendations, adaptedCV, isVis
                 ease: "easeInOut"
               }}
             >
-              <BarChart3 className="h-10 w-10 text-white" />
+              <TrendingUp className="h-10 w-10 text-white" />
             </motion.div>
           </div>
           <h2 className="text-heading-1 font-poppins font-bold text-neutral-text-primary text-neutral-text-primary mb-6 bg-gradient-to-r from-neutral-text-primary to-neutral-text-secondary bg-clip-text text-transparent">
@@ -243,53 +273,205 @@ export function ResultPanel({ score, coverage, recommendations, adaptedCV, isVis
                     />
                   </div>
                 </div>
-                <div className="space-y-4">
-                  <h4 className="text-body font-poppins font-semibold text-neutral-text-primary text-neutral-text-primary">Matched skills:</h4>
-                  <div className="flex flex-wrap gap-3">
-                    <motion.div
-                      initial={{ scale: 0, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ delay: 2.0, duration: 0.3 }}
-                    >
-                      <Badge variant="success" className="px-3 py-1 text-sm font-medium">React</Badge>
-                    </motion.div>
-                    <motion.div
-                      initial={{ scale: 0, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ delay: 2.1, duration: 0.3 }}
-                    >
-                      <Badge variant="success" className="px-3 py-1 text-sm font-medium">Node.js</Badge>
-                    </motion.div>
-                    <motion.div
-                      initial={{ scale: 0, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ delay: 2.2, duration: 0.3 }}
-                    >
-                      <Badge variant="success" className="px-3 py-1 text-sm font-medium">TypeScript</Badge>
-                    </motion.div>
-                    <motion.div
-                      initial={{ scale: 0, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ delay: 2.3, duration: 0.3 }}
-                    >
-                      <Badge variant="success" className="px-3 py-1 text-sm font-medium">PostgreSQL</Badge>
-                    </motion.div>
-                    <motion.div
-                      initial={{ scale: 0, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ delay: 2.4, duration: 0.3 }}
-                    >
-                      <Badge variant="secondary" className="px-3 py-1 text-sm font-medium">Docker</Badge>
-                    </motion.div>
-                    <motion.div
-                      initial={{ scale: 0, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ delay: 2.5, duration: 0.3 }}
-                    >
-                      <Badge variant="secondary" className="px-3 py-1 text-sm font-medium">AWS</Badge>
-                    </motion.div>
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
+                        <Check className="w-4 h-4 text-emerald-600" />
+                      </div>
+                      <h4 className="text-lg font-poppins font-semibold text-neutral-text-primary">Matched Skills</h4>
+                    </div>
+                    <div className="flex items-center space-x-2 px-3 py-1.5 bg-emerald-50 rounded-lg border border-emerald-200">
+                      <Check className="w-4 h-4 text-emerald-600" />
+                      <span className="text-sm font-medium text-emerald-700">
+                        {apiResponse?.gaps?.matched_skills?.length || 6} skills
+                      </span>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                    {apiResponse?.gaps?.matched_skills?.length > 0 ? (
+                      apiResponse.gaps.matched_skills.map((skill, index) => (
+                        <motion.div
+                          key={skill}
+                          initial={{ scale: 0, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={{ delay: 2.0 + (index * 0.05), duration: 0.4, ease: "easeOut" }}
+                          className="group"
+                        >
+                          <div className="flex items-center space-x-2 p-3 bg-white rounded-xl border border-emerald-200 hover:border-emerald-300 hover:shadow-md transition-all duration-200">
+                            <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center">
+                              <Check className="w-3 h-3 text-emerald-600" />
+                            </div>
+                            <span className="text-sm font-medium text-neutral-text-primary truncate">{skill}</span>
+                          </div>
+                        </motion.div>
+                      ))
+                    ) : (
+                      <>
+                        <motion.div
+                          initial={{ scale: 0, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={{ delay: 2.0, duration: 0.4, ease: "easeOut" }}
+                          className="group"
+                        >
+                          <div className="flex items-center space-x-2 p-3 bg-white rounded-xl border border-emerald-200 hover:border-emerald-300 hover:shadow-md transition-all duration-200">
+                            <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center">
+                              <Check className="w-3 h-3 text-emerald-600" />
+                            </div>
+                            <span className="text-sm font-medium text-neutral-text-primary">React</span>
+                          </div>
+                        </motion.div>
+                        <motion.div
+                          initial={{ scale: 0, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={{ delay: 2.05, duration: 0.4, ease: "easeOut" }}
+                          className="group"
+                        >
+                          <div className="flex items-center space-x-2 p-3 bg-white rounded-xl border border-emerald-200 hover:border-emerald-300 hover:shadow-md transition-all duration-200">
+                            <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center">
+                              <Check className="w-3 h-3 text-emerald-600" />
+                            </div>
+                            <span className="text-sm font-medium text-neutral-text-primary">Node.js</span>
+                          </div>
+                        </motion.div>
+                        <motion.div
+                          initial={{ scale: 0, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={{ delay: 2.1, duration: 0.4, ease: "easeOut" }}
+                          className="group"
+                        >
+                          <div className="flex items-center space-x-2 p-3 bg-white rounded-xl border border-emerald-200 hover:border-emerald-300 hover:shadow-md transition-all duration-200">
+                            <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center">
+                              <Check className="w-3 h-3 text-emerald-600" />
+                            </div>
+                            <span className="text-sm font-medium text-neutral-text-primary">TypeScript</span>
+                          </div>
+                        </motion.div>
+                        <motion.div
+                          initial={{ scale: 0, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={{ delay: 2.15, duration: 0.4, ease: "easeOut" }}
+                          className="group"
+                        >
+                          <div className="flex items-center space-x-2 p-3 bg-white rounded-xl border border-emerald-200 hover:border-emerald-300 hover:shadow-md transition-all duration-200">
+                            <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center">
+                              <Check className="w-3 h-3 text-emerald-600" />
+                            </div>
+                            <span className="text-sm font-medium text-neutral-text-primary">PostgreSQL</span>
+                          </div>
+                        </motion.div>
+                        <motion.div
+                          initial={{ scale: 0, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={{ delay: 2.2, duration: 0.4, ease: "easeOut" }}
+                          className="group"
+                        >
+                          <div className="flex items-center space-x-2 p-3 bg-white rounded-xl border border-blue-200 hover:border-blue-300 hover:shadow-md transition-all duration-200">
+                            <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
+                              <Check className="w-3 h-3 text-blue-600" />
+                            </div>
+                            <span className="text-sm font-medium text-neutral-text-primary">Docker</span>
+                          </div>
+                        </motion.div>
+                        <motion.div
+                          initial={{ scale: 0, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={{ delay: 2.25, duration: 0.4, ease: "easeOut" }}
+                          className="group"
+                        >
+                          <div className="flex items-center space-x-2 p-3 bg-white rounded-xl border border-amber-200 hover:border-amber-300 hover:shadow-md transition-all duration-200">
+                            <div className="w-6 h-6 rounded-full bg-amber-100 flex items-center justify-center">
+                              <Check className="w-3 h-3 text-amber-600" />
+                            </div>
+                            <span className="text-sm font-medium text-neutral-text-primary">AWS</span>
+                          </div>
+                        </motion.div>
+                      </>
+                    )}
                   </div>
                 </div>
+                
+                {/* Missing Skills Section */}
+                {(apiResponse?.gaps?.missing_skills?.length > 0 || (!apiResponse && coverage < 100)) && (
+                  <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
+                          <AlertTriangle className="w-4 h-4 text-amber-600" />
+                        </div>
+                        <h4 className="text-lg font-poppins font-semibold text-neutral-text-primary">Missing Skills</h4>
+                      </div>
+                      <div className="flex items-center space-x-2 px-3 py-1.5 bg-amber-50 rounded-lg border border-amber-200">
+                        <Plus className="w-4 h-4 text-amber-600" />
+                        <span className="text-sm font-medium text-amber-700">
+                          {apiResponse?.gaps?.missing_skills?.length || 3} to learn
+                        </span>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                      {apiResponse?.gaps?.missing_skills?.length > 0 ? (
+                        apiResponse.gaps.missing_skills.map((skill, index) => (
+                          <motion.div
+                            key={skill}
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ delay: 2.6 + (index * 0.05), duration: 0.4, ease: "easeOut" }}
+                            className="group"
+                          >
+                            <div className="flex items-center space-x-2 p-3 bg-white rounded-xl border border-amber-200 hover:border-amber-300 hover:shadow-md transition-all duration-200">
+                              <div className="w-6 h-6 rounded-full bg-amber-100 flex items-center justify-center">
+                                <Plus className="w-3 h-3 text-amber-600" />
+                              </div>
+                              <span className="text-sm font-medium text-neutral-text-primary truncate">{skill}</span>
+                            </div>
+                          </motion.div>
+                        ))
+                      ) : (
+                        <>
+                          <motion.div
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ delay: 2.6, duration: 0.4, ease: "easeOut" }}
+                            className="group"
+                          >
+                            <div className="flex items-center space-x-2 p-3 bg-white rounded-xl border border-amber-200 hover:border-amber-300 hover:shadow-md transition-all duration-200">
+                              <div className="w-6 h-6 rounded-full bg-amber-100 flex items-center justify-center">
+                                <Plus className="w-3 h-3 text-amber-600" />
+                              </div>
+                              <span className="text-sm font-medium text-neutral-text-primary">Kubernetes</span>
+                            </div>
+                          </motion.div>
+                          <motion.div
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ delay: 2.65, duration: 0.4, ease: "easeOut" }}
+                            className="group"
+                          >
+                            <div className="flex items-center space-x-2 p-3 bg-white rounded-xl border border-amber-200 hover:border-amber-300 hover:shadow-md transition-all duration-200">
+                              <div className="w-6 h-6 rounded-full bg-amber-100 flex items-center justify-center">
+                                <Plus className="w-3 h-3 text-amber-600" />
+                              </div>
+                              <span className="text-sm font-medium text-neutral-text-primary">Redis</span>
+                            </div>
+                          </motion.div>
+                          <motion.div
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ delay: 2.7, duration: 0.4, ease: "easeOut" }}
+                            className="group"
+                          >
+                            <div className="flex items-center space-x-2 p-3 bg-white rounded-xl border border-amber-200 hover:border-amber-300 hover:shadow-md transition-all duration-200">
+                              <div className="w-6 h-6 rounded-full bg-amber-100 flex items-center justify-center">
+                                <Plus className="w-3 h-3 text-amber-600" />
+                              </div>
+                              <span className="text-sm font-medium text-neutral-text-primary">GraphQL</span>
+                            </div>
+                          </motion.div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </motion.div>
@@ -375,6 +557,20 @@ export function ResultPanel({ score, coverage, recommendations, adaptedCV, isVis
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => setShowTemplateSystem(true)} 
+                      className="bg-gradient-to-r from-primary/10 to-accent/10 backdrop-blur-sm border-primary/30 hover:border-primary/50 hover:bg-primary/10"
+                    >
+                      <Palette className="h-4 w-4 mr-2" />
+                      Templates
+                    </Button>
+                  </motion.div>
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
                     <Button variant="outline" size="sm" onClick={handleCopy} className="bg-neutral-surface/80 backdrop-blur-sm border-primary/20 hover:border-primary/40 hover:bg-primary/5">
                       <Copy className="h-4 w-4 mr-2" />
                       Copy
@@ -434,7 +630,21 @@ export function ResultPanel({ score, coverage, recommendations, adaptedCV, isVis
             </CardContent>
           </Card>
         </motion.div>
+
       </div>
+
+      {/* Template System Modal */}
+      {showTemplateSystem && structuredResume && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm">
+          <div className="absolute inset-0" onClick={() => setShowTemplateSystem(false)} />
+          <div className="relative z-10 w-full h-full overflow-auto">
+            <TemplateSystem
+              structuredResume={structuredResume}
+              onBack={() => setShowTemplateSystem(false)}
+            />
+          </div>
+        </div>
+      )}
     </motion.section>
   )
 }

@@ -6,10 +6,35 @@ import { Button } from './ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
-import { Separator } from './ui/separator'
 import { Badge } from './ui/badge'
 import { Progress } from './ui/progress'
 import { Checkbox } from './ui/checkbox'
+// Simple password strength hook
+const usePasswordStrength = (password: string) => {
+  const [showStrength, setShowStrength] = useState(false)
+  
+  const strength = Math.min(100, password.length * 10)
+  const color = strength < 30 ? 'text-red-500' : strength < 60 ? 'text-yellow-500' : 'text-green-500'
+  const text = strength < 30 ? 'Weak' : strength < 60 ? 'Medium' : 'Strong'
+  
+  return { strength, color, text, showStrength, setShowStrength }
+}
+
+// Simple validation functions
+const validateEmail = (email: string) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return {
+    isValid: emailRegex.test(email),
+    message: emailRegex.test(email) ? '' : 'Please enter a valid email address'
+  }
+}
+
+const validatePassword = (password: string) => {
+  if (password.length < 8) {
+    return { isValid: false, message: 'Password must be at least 8 characters long' }
+  }
+  return { isValid: true, message: '' }
+}
 
 export function LoginPage({ onLogin }: { onLogin: () => void }) {
   const [isLogin, setIsLogin] = useState(true)
@@ -17,42 +42,27 @@ export function LoginPage({ onLogin }: { onLogin: () => void }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [passwordStrength, setPasswordStrength] = useState(0)
-  const [showPasswordStrength, setShowPasswordStrength] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({})
 
-  // Password strength calculation
-  React.useEffect(() => {
-    if (!password) {
-      setPasswordStrength(0)
-      return
-    }
-
-    let strength = 0
-    if (password.length >= 8) strength += 25
-    if (/[a-z]/.test(password)) strength += 25
-    if (/[A-Z]/.test(password)) strength += 25
-    if (/[0-9!@#$%^&*]/.test(password)) strength += 25
-
-    setPasswordStrength(strength)
-  }, [password])
-
-  const getPasswordStrengthColor = () => {
-    if (passwordStrength <= 25) return 'bg-danger'
-    if (passwordStrength <= 50) return 'bg-warning'
-    if (passwordStrength <= 75) return 'bg-warning'
-    return 'bg-success'
-  }
-
-  const getPasswordStrengthText = () => {
-    if (passwordStrength <= 25) return 'Weak'
-    if (passwordStrength <= 50) return 'Fair'
-    if (passwordStrength <= 75) return 'Good'
-    return 'Strong'
-  }
+  const passwordStrength = usePasswordStrength(password)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // Validate inputs
+    const emailValidation = validateEmail(email)
+    const passwordValidation = isLogin ? { isValid: true, message: '' } : validatePassword(password)
+    
+    if (!emailValidation.isValid || !passwordValidation.isValid) {
+      setErrors({
+        email: emailValidation.message,
+        password: passwordValidation.message
+      })
+      return
+    }
+    
+    setErrors({})
     setIsLoading(true)
     
     // Simulate API call
@@ -160,9 +170,9 @@ export function LoginPage({ onLogin }: { onLogin: () => void }) {
             <Zap className="text-2xl text-white drop-shadow-lg" />
           </motion.div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-            Resume JobMatcher
+            AI Job Matcher
           </h1>
-          <p className="text-neutral-text-secondary mt-2">AI-powered resume optimization</p>
+          <p className="text-neutral-text-secondary mt-2">Resume optimization</p>
           <Badge variant="secondary" className="mt-3 bg-primary/10 text-primary border-primary/20">
             <Chrome className="w-3 h-3 mr-1" />
             Beta
@@ -221,9 +231,14 @@ export function LoginPage({ onLogin }: { onLogin: () => void }) {
                       placeholder="Enter your email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="pl-10 h-12 bg-neutral-surface/60 backdrop-blur-sm border-neutral-border focus:border-primary focus:ring-primary transition-all duration-200 text-neutral-text-primary placeholder-neutral-text-secondary"
+                      className={`pl-10 h-12 bg-neutral-surface/60 backdrop-blur-sm border-neutral-border focus:border-primary focus:ring-primary transition-all duration-200 text-neutral-text-primary placeholder-neutral-text-secondary ${
+                        errors.email ? 'border-red-500' : ''
+                      }`}
                       required
                     />
+                    {errors.email && (
+                      <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+                    )}
                   </div>
                 </div>
 
@@ -239,11 +254,16 @@ export function LoginPage({ onLogin }: { onLogin: () => void }) {
                       placeholder="Enter your password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      onFocus={() => !isLogin && setShowPasswordStrength(true)}
-                      onBlur={() => !isLogin && setShowPasswordStrength(false)}
-                      className="pl-10 pr-10 h-12 bg-neutral-surface/60 backdrop-blur-sm border-neutral-border focus:border-primary focus:ring-primary transition-all duration-200 text-neutral-text-primary placeholder-neutral-text-secondary"
+                      onFocus={() => !isLogin && passwordStrength.setShowStrength(true)}
+                      onBlur={() => !isLogin && passwordStrength.setShowStrength(false)}
+                      className={`pl-10 pr-10 h-12 bg-neutral-surface/60 backdrop-blur-sm border-neutral-border focus:border-primary focus:ring-primary transition-all duration-200 text-neutral-text-primary placeholder-neutral-text-secondary ${
+                        errors.password ? 'border-red-500' : ''
+                      }`}
                       required
                     />
+                    {errors.password && (
+                      <p className="text-red-500 text-xs mt-1">{errors.password}</p>
+                    )}
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
@@ -254,7 +274,7 @@ export function LoginPage({ onLogin }: { onLogin: () => void }) {
                   </div>
                   
                   {/* Password strength indicator */}
-                  {!isLogin && showPasswordStrength && password && (
+                  {!isLogin && passwordStrength.showStrength && password && (
                     <motion.div
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
@@ -263,11 +283,11 @@ export function LoginPage({ onLogin }: { onLogin: () => void }) {
                     >
                       <div className="flex items-center justify-between text-xs">
                         <span className="text-neutral-text-secondary text-neutral-text-secondary">Password strength:</span>
-                        <span className={`font-medium ${getPasswordStrengthColor().replace('bg-', 'text-')}`}>
-                          {getPasswordStrengthText()}
+                        <span className={`font-medium ${passwordStrength.color.replace('bg-', 'text-')}`}>
+                          {passwordStrength.text}
                         </span>
                       </div>
-                      <Progress value={passwordStrength} className="h-1" />
+                      <Progress value={passwordStrength.strength} className="h-1" />
                       <div className="flex items-center space-x-2 text-xs text-neutral-text-secondary text-neutral-text-secondary">
                         {password.length >= 8 && <CheckCircle className="w-3 h-3 text-success" />}
                         {/[a-z]/.test(password) && <CheckCircle className="w-3 h-3 text-success" />}
@@ -303,7 +323,7 @@ export function LoginPage({ onLogin }: { onLogin: () => void }) {
                 >
                   <Button
                     type="submit"
-                    disabled={isLoading || (!isLogin && passwordStrength < 50)}
+                    disabled={isLoading || (!isLogin && passwordStrength.strength < 50)}
                     className="w-full h-12 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isLoading ? (
@@ -328,7 +348,7 @@ export function LoginPage({ onLogin }: { onLogin: () => void }) {
                       setIsLogin(!isLogin)
                       setEmail('')
                       setPassword('')
-                      setPasswordStrength(0)
+                      // Password strength will be reset automatically by the hook
                     }}
                     className="ml-1 text-primary hover:text-primary/80 font-medium transition-colors"
                   >
@@ -349,7 +369,7 @@ export function LoginPage({ onLogin }: { onLogin: () => void }) {
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
               <div className="w-6 h-6 bg-gradient-to-br from-primary to-accent rounded-full mx-auto mb-2 shadow-lg" />
-              <p>AI Analysis</p>
+              <p>Analysis</p>
             </motion.div>
             <motion.div 
               className="bg-neutral-surface/40 backdrop-blur-sm rounded-lg p-3 cursor-pointer border border-neutral-border/20"

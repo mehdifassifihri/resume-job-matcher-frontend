@@ -53,10 +53,10 @@ export function HowItWorks() {
               <Settings className="h-8 w-8 text-white" />
             </div>
           </div>
-          <h2 className="text-heading-1 font-optimized text-neutral-text-primary text-neutral-text-primary mb-6">
+          <h2 className="text-4xl md:text-5xl font-poppins-bold text-neutral-text-primary mb-6">
             How does it work?
           </h2>
-          <p className="text-body-large font-optimized text-neutral-text-secondary text-neutral-text-secondary max-w-3xl mx-auto font-medium">
+          <p className="text-xl font-poppins text-neutral-text-secondary max-w-3xl mx-auto">
             In three simple steps, our AI transforms your CV to maximize your chances of being selected.
           </p>
         </motion.div>
@@ -76,14 +76,14 @@ export function HowItWorks() {
                     <step.icon className={`h-8 w-8 ${step.color}`} />
                   </div>
                   <div className="flex items-center justify-center mb-2">
-                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-primary to-accent text-white text-sm font-bold mr-3">
+                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-primary to-accent text-white text-sm font-poppins-bold mr-3">
                       {index + 1}
                     </span>
-                    <CardTitle className="text-heading-3 font-optimized text-neutral-text-primary text-neutral-text-primary">{step.title}</CardTitle>
+                    <CardTitle className="text-xl font-poppins-semibold text-neutral-text-primary">{step.title}</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-base leading-relaxed text-neutral-text-secondary text-neutral-text-secondary">
+                  <CardDescription className="text-base leading-relaxed font-poppins text-neutral-text-secondary">
                     {step.description}
                   </CardDescription>
                 </CardContent>

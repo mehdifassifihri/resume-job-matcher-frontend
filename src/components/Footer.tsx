@@ -1,4 +1,5 @@
 import { motion } from "framer-motion"
+import { FileText, Target } from "lucide-react"
 
 export function Footer() {
   return (
@@ -23,12 +24,15 @@ export function Footer() {
           <div className="md:col-span-2">
             <div className="flex items-center space-x-2 mb-4">
               <div className="h-8 w-8 rounded-lg bg-gradient-to-r from-primary to-accent flex items-center justify-center">
-                <span className="text-white font-bold text-sm">AI</span>
+                <div className="flex items-center justify-center">
+                  <FileText className="w-4 h-4 text-white" />
+                  <Target className="w-2 h-2 text-white -ml-1 -mt-1" />
+                </div>
               </div>
-              <span className="text-xl font-bold text-neutral-text-primary">Resume & Job Matcher</span>
+              <span className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">AI Job Matcher</span>
             </div>
             <p className="text-neutral-text-secondary mb-4 max-w-md">
-              Optimize your chances of landing your dream job with our AI that adapts your CV to job offers.
+              Optimize your chances of landing your dream job with our system that adapts your CV to job offers.
             </p>
           </div>
 
@@ -37,44 +41,54 @@ export function Footer() {
             <h3 className="text-neutral-text-primary font-semibold mb-4">Quick links</h3>
             <ul className="space-y-2">
               <li>
-                <a 
-                  href="#" 
-                  className="text-neutral-text-secondary hover:text-neutral-text-primary transition-colors"
-                  onClick={(e) => {
-                    e.preventDefault()
+                <button 
+                  className="text-neutral-text-secondary hover:text-neutral-text-primary transition-colors text-left"
+                  onClick={() => {
                     // Scroll to top
                     window.scrollTo({ top: 0, behavior: 'smooth' })
                   }}
                 >
                   Home
-                </a>
+                </button>
               </li>
               <li>
-                <a 
-                  href="#" 
-                  className="text-neutral-text-secondary hover:text-neutral-text-primary transition-colors"
-                  onClick={(e) => e.preventDefault()}
+                <button 
+                  className="text-neutral-text-secondary hover:text-neutral-text-primary transition-colors text-left"
+                  onClick={() => {
+                    // Scroll to how it works section
+                    const section = document.querySelector('[data-how-it-works]')
+                    if (section) {
+                      section.scrollIntoView({ behavior: 'smooth' })
+                    }
+                  }}
                 >
                   How it works
-                </a>
+                </button>
               </li>
               <li>
-                <a 
-                  href="#" 
-                  className="text-neutral-text-secondary hover:text-neutral-text-primary transition-colors"
-                  onClick={(e) => e.preventDefault()}
+                <button 
+                  className="text-neutral-text-secondary hover:text-neutral-text-primary transition-colors text-left"
+                  onClick={() => {
+                    // Scroll to pricing section
+                    const section = document.querySelector('[data-pricing]')
+                    if (section) {
+                      section.scrollIntoView({ behavior: 'smooth' })
+                    }
+                  }}
                 >
                   Pricing
-                </a>
+                </button>
               </li>
               <li>
-                <a 
-                  href="#" 
-                  className="text-neutral-text-secondary hover:text-neutral-text-primary transition-colors"
-                  onClick={(e) => e.preventDefault()}
+                <button 
+                  className="text-neutral-text-secondary hover:text-neutral-text-primary transition-colors text-left"
+                  onClick={() => {
+                    // Scroll to contact section or show contact modal
+                    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
+                  }}
                 >
                   Contact
-                </a>
+                </button>
               </li>
             </ul>
           </div>
@@ -84,40 +98,48 @@ export function Footer() {
             <h3 className="text-neutral-text-primary font-semibold mb-4">Support</h3>
             <ul className="space-y-2">
               <li>
-                <a 
-                  href="#" 
-                  className="text-neutral-text-secondary hover:text-neutral-text-primary transition-colors"
-                  onClick={(e) => e.preventDefault()}
+                <button 
+                  className="text-neutral-text-secondary hover:text-neutral-text-primary transition-colors text-left"
+                  onClick={() => {
+                    // Open help center or show help modal
+                    alert('Help center coming soon!')
+                  }}
                 >
                   Help center
-                </a>
+                </button>
               </li>
               <li>
-                <a 
-                  href="#" 
-                  className="text-neutral-text-secondary hover:text-neutral-text-primary transition-colors"
-                  onClick={(e) => e.preventDefault()}
+                <button 
+                  className="text-neutral-text-secondary hover:text-neutral-text-primary transition-colors text-left"
+                  onClick={() => {
+                    // Open FAQ or show FAQ modal
+                    alert('FAQ coming soon!')
+                  }}
                 >
                   FAQ
-                </a>
+                </button>
               </li>
               <li>
-                <a 
-                  href="#" 
-                  className="text-neutral-text-secondary hover:text-neutral-text-primary transition-colors"
-                  onClick={(e) => e.preventDefault()}
+                <button 
+                  className="text-neutral-text-secondary hover:text-neutral-text-primary transition-colors text-left"
+                  onClick={() => {
+                    // Open privacy policy or show privacy modal
+                    alert('Privacy policy coming soon!')
+                  }}
                 >
                   Privacy policy
-                </a>
+                </button>
               </li>
               <li>
-                <a 
-                  href="#" 
-                  className="text-neutral-text-secondary hover:text-neutral-text-primary transition-colors"
-                  onClick={(e) => e.preventDefault()}
+                <button 
+                  className="text-neutral-text-secondary hover:text-neutral-text-primary transition-colors text-left"
+                  onClick={() => {
+                    // Open terms of use or show terms modal
+                    alert('Terms of use coming soon!')
+                  }}
                 >
                   Terms of use
-                </a>
+                </button>
               </li>
             </ul>
           </div>
@@ -125,23 +147,27 @@ export function Footer() {
 
         <div className="border-t border-neutral-border mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-neutral-text-secondary text-sm">
-            © 2024 AI Resume & Job Matcher. All rights reserved.
+            © 2024 Resume & Job Matcher. All rights reserved.
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <a 
-              href="#" 
+            <button 
               className="text-neutral-text-secondary hover:text-neutral-text-primary transition-colors text-sm"
-              onClick={(e) => e.preventDefault()}
+              onClick={() => {
+                // Open legal notice or show legal modal
+                alert('Legal notice coming soon!')
+              }}
             >
               Legal notice
-            </a>
-            <a 
-              href="#" 
+            </button>
+            <button 
               className="text-neutral-text-secondary hover:text-neutral-text-primary transition-colors text-sm"
-              onClick={(e) => e.preventDefault()}
+              onClick={() => {
+                // Open privacy policy or show privacy modal
+                alert('Privacy policy coming soon!')
+              }}
             >
               Privacy policy
-            </a>
+            </button>
           </div>
         </div>
       </div>

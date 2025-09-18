@@ -32,7 +32,18 @@ export function downloadMock(filename: string, content: string, type: 'docx' | '
 export function simulateFileUpload(file: File): Promise<string> {
   return new Promise((resolve) => {
     setTimeout(() => {
-      // Simulate text extraction from file
+      // Handle TXT files directly
+      if (file.name.toLowerCase().endsWith('.txt')) {
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          const content = e.target?.result as string
+          resolve(content)
+        }
+        reader.readAsText(file)
+        return
+      }
+      
+      // Simulate text extraction from other file types
       const mockContent = `Education
 University of California, Los Angeles (UCLA) | B.S. Computer Science
 Sept 2019 - Expected Jun 2023
@@ -76,15 +87,17 @@ Professional Memberships
 }
 
 export function calculateMockScore(cvContent: string, jobDescription: string): number {
-  // Simulation of a scoring algorithm
-  const keywords = ['react', 'javascript', 'node', 'python', 'aws', 'docker', 'kubernetes', 'postgresql']
   const cvLower = cvContent.toLowerCase()
   const jdLower = jobDescription.toLowerCase()
   
+  // Simple keyword matching
+  const keywords = ['javascript', 'react', 'node.js', 'python', 'java', 'sql', 'git', 'aws', 'docker', 'api']
   let score = 0
-  keywords.forEach(keyword => {
+  const keywordWeight = 10 // 10 points per matching keyword
+  
+  keywords.forEach((keyword: string) => {
     if (cvLower.includes(keyword) && jdLower.includes(keyword)) {
-      score += 12.5 // 100 / 8 keywords
+      score += keywordWeight
     }
   })
   
@@ -92,22 +105,22 @@ export function calculateMockScore(cvContent: string, jobDescription: string): n
   const randomBonus = Math.random() * 20
   const finalScore = Math.round(score + randomBonus)
   
-  return Math.min(finalScore, 100) // Cap at 100%
+  return Math.min(finalScore, 100)
 }
 
 export function generateMockRecommendations(score: number): string[] {
   const recommendations = [
-    "Quantify the impact of your achievements with concrete metrics (e.g.: +30% performance)",
-    "Move the 'React' skill higher in your resume to improve visibility",
-    "Add recent personal projects using the required technologies",
-    "Specify your level of expertise in AWS and Docker",
-    "Include relevant certifications if available"
+    "Add more specific technical skills mentioned in the job description",
+    "Include quantifiable achievements in your work experience",
+    "Highlight relevant projects that match the job requirements",
+    "Optimize your resume summary to align with the job role",
+    "Add industry-specific certifications or training"
   ]
   
   // Return 3-4 recommendations based on score
   if (score < 50) {
     return recommendations.slice(0, 4)
-  } else if (score < 80) {
+  } else if (score < 75) {
     return recommendations.slice(1, 4)
   } else {
     return recommendations.slice(2, 4)

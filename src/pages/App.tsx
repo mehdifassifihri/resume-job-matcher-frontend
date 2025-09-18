@@ -4,10 +4,8 @@ import { HeroUpload } from "../components/HeroUpload"
 import { HowItWorks } from "../components/HowItWorks"
 import { AutoApplySection } from "../components/AutoApplySection"
 import { ResultPanel } from "../components/ResultPanel"
-import { JobSuggestions } from "../components/JobSuggestions"
 import { PricingPlans } from "../components/PricingPlans"
 import { Footer } from "../components/Footer"
-import { Dashboard } from "../components/Dashboard"
 import { BackgroundEffects } from "../components/BackgroundEffects"
 import { InteractiveParticles } from "../components/InteractiveParticles"
 import { ColorGradients } from "../components/ColorGradients"
@@ -15,7 +13,13 @@ import { LoginPage } from "../components/LoginPage"
 import { Toaster } from "../components/ui/toaster"
 import { ThemeProvider } from "../contexts/ThemeContext"
 import { calculateMockScore, generateMockRecommendations } from "../lib/utils"
-import { mockAdaptedCV } from "../lib/mock"
+import { mockAdaptedCV, mockStructuredResume } from "../lib/mock"
+import { apiService, APIResponse, APIError } from "../lib/api"
+
+// Import API test utilities in development
+if (process.env.NODE_ENV === 'development') {
+  import('../lib/api-test')
+}
 
 export function App() {
   const [cvContent, setCvContent] = useState("")
@@ -25,17 +29,16 @@ export function App() {
   const [score, setScore] = useState(0)
   const [coverage, setCoverage] = useState(0)
   const [recommendations, setRecommendations] = useState<string[]>([])
-  const [currentView, setCurrentView] = useState<'login' | 'home' | 'dashboard'>('home')
   const [isAuthenticated, setIsAuthenticated] = useState(true)
+  const [apiResponse, setApiResponse] = useState<APIResponse | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   const handleLogin = () => {
     setIsAuthenticated(true)
-    setCurrentView('home')
   }
 
   const handleLogout = () => {
     setIsAuthenticated(false)
-    setCurrentView('login')
   }
 
   const handleCVUpload = (content: string) => {
@@ -46,22 +49,23 @@ export function App() {
     setJobDescription(content)
   }
 
-  const handleAdaptCV = async () => {
-    if (!cvContent || !jobDescription) return
+  const handleAdaptCV = async (resumeFile: File, jobFile: File) => {
+    if (!resumeFile || !jobFile) return
 
     setIsLoading(true)
+    setError(null)
+    setApiResponse(null)
     
-    // Simulate AI processing
-    setTimeout(() => {
-      const calculatedScore = calculateMockScore(cvContent, jobDescription)
-      const calculatedCoverage = Math.round(calculatedScore * 0.9) // Coverage slightly lower than score
-      const calculatedRecommendations = generateMockRecommendations(calculatedScore)
+    try {
+      // Call the real API
+      const response = await apiService.uploadResumeAndJob(resumeFile, jobFile)
       
-      setScore(calculatedScore)
-      setCoverage(calculatedCoverage)
-      setRecommendations(calculatedRecommendations)
+      // Update state with API response
+      setApiResponse(response)
+      setScore(Math.round(response.score))
+      setCoverage(Math.round(response.coverage.must_have))
+      setRecommendations(response.recommendations)
       setShowResults(true)
-      setIsLoading(false)
       
       // Scroll to results
       setTimeout(() => {
@@ -70,7 +74,29 @@ export function App() {
           resultsSection.scrollIntoView({ behavior: 'smooth' })
         }
       }, 100)
-    }, 3000) // 3 seconds simulation
+      
+    } catch (error) {
+      console.error('API Error:', error)
+      
+      if (error instanceof APIError) {
+        setError(`API Error: ${error.message}`)
+      } else {
+        setError('An unexpected error occurred. Please try again.')
+      }
+      
+      // Fallback to mock data in case of error
+      const calculatedScore = calculateMockScore(cvContent, jobDescription)
+      const calculatedCoverage = Math.round(calculatedScore * 0.9)
+      const calculatedRecommendations = generateMockRecommendations(calculatedScore)
+      
+      setScore(calculatedScore)
+      setCoverage(calculatedCoverage)
+      setRecommendations(calculatedRecommendations)
+      setShowResults(true)
+      
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   // Show login page if not authenticated
@@ -91,45 +117,39 @@ export function App() {
         
         <div className="relative z-10">
           <Header 
-            onNavigateToDashboard={() => setCurrentView('dashboard')} 
             onLogout={handleLogout}
             isAuthenticated={isAuthenticated}
           />
           
-          {currentView === 'home' ? (
-            <>
-              <main>
-                <HeroUpload 
-                  onCVUpload={handleCVUpload}
-                  onJobDescriptionUpload={handleJobDescriptionUpload}
-                  onAdaptCV={handleAdaptCV}
-                  isLoading={isLoading}
-                />
-                
-                <HowItWorks />
-                
-                <AutoApplySection />
-                
-                <div data-results-section>
-                  <ResultPanel 
-                    score={score}
-                    coverage={coverage}
-                    recommendations={recommendations}
-                    adaptedCV={mockAdaptedCV}
-                    isVisible={showResults}
-                  />
-                </div>
-                
-                {showResults && <JobSuggestions />}
-                
-                <PricingPlans />
-              </main>
-              
-              <Footer />
-            </>
-          ) : (
-            <Dashboard onBackToHome={() => setCurrentView('home')} />
-          )}
+          <main>
+            <HeroUpload 
+              onCVUpload={handleCVUpload}
+              onJobDescriptionUpload={handleJobDescriptionUpload}
+              onAdaptCV={handleAdaptCV}
+              isLoading={isLoading}
+            />
+            
+            <HowItWorks />
+            
+            <AutoApplySection />
+            
+            <div data-results-section>
+              <ResultPanel 
+                score={score}
+                coverage={coverage}
+                recommendations={recommendations}
+                adaptedCV={apiResponse?.tailored_resume_text || mockAdaptedCV}
+                isVisible={showResults}
+                structuredResume={apiResponse?.structured_resume || mockStructuredResume}
+                apiResponse={apiResponse}
+                error={error}
+              />
+            </div>
+            
+            <PricingPlans />
+          </main>
+          
+          <Footer />
         </div>
         
         <Toaster />

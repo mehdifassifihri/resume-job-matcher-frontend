@@ -8,7 +8,7 @@ import { simulateFileUpload } from "../lib/utils"
 interface HeroUploadProps {
   onCVUpload: (content: string) => void
   onJobDescriptionUpload: (content: string) => void
-  onAdaptCV: () => void
+  onAdaptCV: (resumeFile: File, jobFile: File) => void
   isLoading: boolean
 }
 
@@ -22,11 +22,11 @@ export function HeroUpload({ onCVUpload, onJobDescriptionUpload, onAdaptCV, isLo
   const handleFileUpload = useCallback(async (file: File, type: 'cv' | 'jd') => {
     if (!file) return
 
-    const allowedTypes = ['.pdf', '.docx', '.doc']
+    const allowedTypes = ['.pdf', '.docx', '.doc', '.txt']
     const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'))
     
     if (!allowedTypes.includes(fileExtension)) {
-      alert('Unsupported file format. Please use PDF or DOCX.')
+      alert('Unsupported file format. Please use PDF, DOCX, or TXT.')
       return
     }
 
@@ -174,12 +174,12 @@ export function HeroUpload({ onCVUpload, onJobDescriptionUpload, onAdaptCV, isLo
                         or click to select a file
                       </p>
                       <p className="text-xs text-neutral-text-secondary">
-                        Accepted formats: PDF, DOCX
+                        Accepted formats: PDF, DOCX, TXT
                       </p>
                     </div>
                     <input
                       type="file"
-                      accept=".pdf,.docx,.doc"
+                      accept=".pdf,.docx,.doc,.txt"
                       onChange={(e) => {
                         const file = e.target.files?.[0]
                         if (file) handleFileUpload(file, 'cv')
@@ -296,13 +296,17 @@ export function HeroUpload({ onCVUpload, onJobDescriptionUpload, onAdaptCV, isLo
             <Button 
               size="lg" 
               className="text-lg px-12 py-6 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-xl hover:shadow-2xl hover:shadow-primary/25 transition-all duration-300 transform hover:scale-105"
-              onClick={onAdaptCV}
+              onClick={() => {
+                if (cvFile && jdFile) {
+                  onAdaptCV(cvFile, jdFile)
+                }
+              }}
               disabled={!canAdapt}
             >
               {isLoading || isUploading ? (
                 <div className="flex items-center space-x-2">
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                  <span>Analysis in progress...</span>
+                  <span>AI Analysis in progress... This may take up to 2 minutes</span>
                 </div>
               ) : (
                 <div className="flex items-center space-x-2">

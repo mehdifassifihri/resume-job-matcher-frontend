@@ -21,7 +21,7 @@ A modern, AI-powered web application that analyzes resume-job compatibility and 
 - **Animations**: Framer Motion
 - **Icons**: Lucide React
 - **Build Tool**: Create React App
-- **Deployment**: Docker with Nginx
+- **Deployment**: Static hosting (Netlify, Vercel, etc.)
 
 ## 📋 Prerequisites
 
@@ -68,34 +68,32 @@ npm start
 
 The application will be available at `http://localhost:3000`
 
-## 🐳 Docker Deployment
+## 🚀 Deployment
 
 ### Production Build
 
 ```bash
-# Build and run with Docker Compose
-docker-compose up --build
+# Create production build
+npm run build
 
-# Or run in detached mode
-docker-compose up -d --build
+# The build folder contains the production-ready files
+# Deploy the contents of the build folder to your hosting service
 ```
 
-### Development Mode
+### Deployment Options
 
-```bash
-# Start development environment
-docker-compose --profile dev up --build
-```
+- **Netlify**: Drag and drop the `build` folder to Netlify
+- **Vercel**: Connect your repository and deploy automatically
+- **GitHub Pages**: Use GitHub Actions to deploy the build folder
+- **AWS S3**: Upload the build folder contents to an S3 bucket
+- **Any Static Host**: Upload the build folder contents to any static hosting service
 
 ## 📖 Documentation
 
-Comprehensive documentation is available in the `docs/` directory:
+Additional documentation files in the project:
 
-- **[Installation Guide](docs/INSTALLATION.md)** - Detailed setup instructions
-- **[Configuration Guide](docs/CONFIGURATION.md)** - Environment variables and settings
-- **[Usage Guide](docs/USAGE.md)** - How to use the application
-- **[FAQ](docs/FAQ.md)** - Frequently asked questions
-- **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Common issues and solutions
+- **[API Integration](API_INTEGRATION.md)** - Backend API integration details
+- **[Timeout Configuration](TIMEOUT_CONFIG.md)** - API timeout and configuration settings
 
 ## 🔧 Configuration Options
 
@@ -184,18 +182,21 @@ formData.append('model', 'gpt-4o-mini');
 ```
 src/
 ├── components/          # React components
-│   ├── ui/             # Reusable UI components
+│   ├── ui/             # Reusable UI components (shadcn/ui)
 │   ├── Header.tsx      # Application header
 │   ├── HeroUpload.tsx  # File upload section
 │   ├── ResultPanel.tsx # Analysis results
+│   ├── CVGenerator.tsx # Resume generation
+│   ├── TemplateSystem.tsx # Template management
 │   └── ...
 ├── lib/                # Utility libraries
 │   ├── api.ts          # API service
 │   ├── config.ts       # Configuration management
-│   ├── fonts.ts        # Font configuration
+│   ├── mock.ts         # Mock data for development
 │   └── utils.ts        # Helper functions
-├── contexts/           # React contexts
+├── contexts/           # React contexts (Theme)
 ├── pages/              # Page components
+├── assets/             # Static assets (images, logos)
 └── styles/             # Global styles
 ```
 
@@ -218,8 +219,11 @@ npm test -- --watch
 # Create production build
 npm run build
 
-# Serve the build locally
+# Serve the build locally for testing
 npx serve -s build -l 3000
+
+# Or use any static file server
+# The build folder contains all necessary files for deployment
 ```
 
 ## 🔒 Security Features
@@ -267,10 +271,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-- **Documentation**: Check the `docs/` directory
+- **Documentation**: Check the project documentation files
 - **Issues**: Report bugs and request features
-- **FAQ**: Common questions and answers
-- **Troubleshooting**: Step-by-step problem solving
+- **API Integration**: See `API_INTEGRATION.md` for backend setup
+- **Configuration**: See `TIMEOUT_CONFIG.md` for timeout settings
 
 ## 🔄 Version History
 

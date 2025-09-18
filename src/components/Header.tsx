@@ -5,12 +5,11 @@ import { Menu, X, Home, Info, DollarSign, User, LogOut } from "lucide-react"
 import { useState, useEffect } from "react"
 
 interface HeaderProps {
-  onNavigateToDashboard?: () => void
   onLogout?: () => void
   isAuthenticated?: boolean
 }
 
-export function Header({ onNavigateToDashboard, onLogout, isAuthenticated }: HeaderProps) {
+export function Header({ onLogout, isAuthenticated }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('home')
 
@@ -112,30 +111,17 @@ export function Header({ onNavigateToDashboard, onLogout, isAuthenticated }: Hea
           <ThemeToggle />
           
           {isAuthenticated ? (
-            <>
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  className="flex items-center space-x-2 border-primary/20 hover:border-primary/40 hover:bg-primary/5"
-                  onClick={onNavigateToDashboard}
-                >
-                  <User className="h-4 w-4" />
-                  <span>Dashboard</span>
-                </Button>
-              </motion.div>
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="flex items-center space-x-2 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20"
-                  onClick={onLogout}
-                >
-                  <LogOut className="h-4 w-4" />
-                  <span>Logout</span>
-                </Button>
-              </motion.div>
-            </>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="flex items-center space-x-2 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20"
+                onClick={onLogout}
+              >
+                <LogOut className="h-4 w-4" />
+                <span>Logout</span>
+              </Button>
+            </motion.div>
           ) : (
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button 
@@ -202,30 +188,17 @@ export function Header({ onNavigateToDashboard, onLogout, isAuthenticated }: Hea
               
               <div className="pt-2 space-y-2">
                 {isAuthenticated ? (
-                  <>
-                    <motion.div whileHover={{ x: 5 }} whileTap={{ scale: 0.95 }}>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        className="w-full justify-start space-x-3 border-primary/20 hover:border-primary/40 hover:bg-primary/5"
-                        onClick={onNavigateToDashboard}
-                      >
-                        <User className="h-4 w-4" />
-                        <span>Dashboard</span>
-                      </Button>
-                    </motion.div>
-                    <motion.div whileHover={{ x: 5 }} whileTap={{ scale: 0.95 }}>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className="w-full justify-start space-x-3 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20"
-                        onClick={onLogout}
-                      >
-                        <LogOut className="h-4 w-4" />
-                        <span>Logout</span>
-                      </Button>
-                    </motion.div>
-                  </>
+                  <motion.div whileHover={{ x: 5 }} whileTap={{ scale: 0.95 }}>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="w-full justify-start space-x-3 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20"
+                      onClick={onLogout}
+                    >
+                      <LogOut className="h-4 w-4" />
+                      <span>Logout</span>
+                    </Button>
+                  </motion.div>
                 ) : (
                   <motion.div whileHover={{ x: 5 }} whileTap={{ scale: 0.95 }}>
                     <Button 

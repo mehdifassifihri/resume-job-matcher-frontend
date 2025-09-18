@@ -1,7 +1,33 @@
 {
   "name": "resume-jobmatcher",
-  "version": "0.1.0",
-  "private": true,
+  "version": "1.0.0",
+  "description": "AI-powered resume and job matching application with intelligent analysis and tailored resume generation",
+  "keywords": [
+    "resume",
+    "job-matching",
+    "ai",
+    "react",
+    "typescript",
+    "tailwind",
+    "career",
+    "recruitment",
+    "cv",
+    "job-search"
+  ],
+  "author": {
+    "name": "Resume Job Matcher Team",
+    "email": "support@resumejobmatcher.com"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/yourusername/resume-jobmatcher",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/resume-jobmatcher.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/resume-jobmatcher/issues"
+  },
+  "private": false,
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.10",
     "@radix-ui/react-checkbox": "^1.3.3",
@@ -23,6 +49,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "daisyui": "^5.0.54",
+    "es-abstract": "^1.24.0",
     "framer-motion": "^12.23.12",
     "lucide-react": "^0.542.0",
     "react": "^19.1.1",
@@ -36,7 +63,18 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "type-check": "tsc --noEmit",
+    "analyze": "npm run build && npx webpack-bundle-analyzer build/static/js/*.js",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up",
+    "docker:down": "docker-compose down",
+    "docker:dev": "docker-compose --profile dev up",
+    "clean": "rm -rf build node_modules package-lock.json",
+    "reinstall": "npm run clean && npm install",
+    "preview": "npm run build && npx serve -s build -l 3000"
   },
   "eslintConfig": {
     "extends": [
