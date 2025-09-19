@@ -33,7 +33,7 @@ export function AutoApplySection() {
               <img 
                 src={n8nLogo} 
                 alt="n8n" 
-                className="h-8 w-auto"
+                className="h-12 w-auto"
               />
             </span>
           </h2>
