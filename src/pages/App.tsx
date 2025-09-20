@@ -9,6 +9,7 @@ import { Footer } from "../components/Footer"
 import { BackgroundEffects } from "../components/BackgroundEffects"
 import { InteractiveParticles } from "../components/InteractiveParticles"
 import { ColorGradients } from "../components/ColorGradients"
+import { Dashboard } from "../components/Dashboard"
 import { Toaster } from "../components/ui/toaster"
 import { ThemeProvider } from "../contexts/ThemeContext"
 import { calculateMockScore, generateMockRecommendations } from "../lib/utils"
@@ -30,6 +31,7 @@ export function App() {
   const [recommendations, setRecommendations] = useState<string[]>([])
   const [apiResponse, setApiResponse] = useState<APIResponse | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [currentView, setCurrentView] = useState<'home' | 'dashboard'>('home')
 
 
   const handleCVUpload = (content: string) => {
@@ -38,6 +40,19 @@ export function App() {
 
   const handleJobDescriptionUpload = (content: string) => {
     setJobDescription(content)
+  }
+
+  const handleNavigation = (sectionId: string) => {
+    if (sectionId === 'dashboard') {
+      setCurrentView('dashboard')
+    } else {
+      setCurrentView('home')
+      // Scroll to section logic for home view
+      const element = document.querySelector(`[data-section="${sectionId}"]`)
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' })
+      }
+    }
   }
 
   const handleAdaptCV = async (resumeFile: File, jobFile: File) => {
@@ -99,37 +114,41 @@ export function App() {
         <ColorGradients />
         
         <div className="relative z-10">
-          <Header />
+          <Header onNavigate={handleNavigation} />
           
-          <main>
-            <HeroUpload 
-              onCVUpload={handleCVUpload}
-              onJobDescriptionUpload={handleJobDescriptionUpload}
-              onAdaptCV={handleAdaptCV}
-              isLoading={isLoading}
-            />
-            
-            <HowItWorks />
-            
-            <AutoApplySection />
-            
-            <div data-results-section>
-              <ResultPanel 
-                score={score}
-                coverage={coverage}
-                recommendations={recommendations}
-                adaptedCV={apiResponse?.tailored_resume_text || mockAdaptedCV}
-                isVisible={showResults}
-                structuredResume={apiResponse?.structured_resume || mockStructuredResume}
-                apiResponse={apiResponse}
-                error={error}
+          {currentView === 'dashboard' ? (
+            <Dashboard />
+          ) : (
+            <main>
+              <HeroUpload 
+                onCVUpload={handleCVUpload}
+                onJobDescriptionUpload={handleJobDescriptionUpload}
+                onAdaptCV={handleAdaptCV}
+                isLoading={isLoading}
               />
-            </div>
-            
-            <PricingPlans />
-          </main>
+              
+              <HowItWorks />
+              
+              <AutoApplySection />
+              
+              <div data-results-section>
+                <ResultPanel 
+                  score={score}
+                  coverage={coverage}
+                  recommendations={recommendations}
+                  adaptedCV={apiResponse?.tailored_resume_text || mockAdaptedCV}
+                  isVisible={showResults}
+                  structuredResume={apiResponse?.structured_resume || mockStructuredResume}
+                  apiResponse={apiResponse}
+                  error={error}
+                />
+              </div>
+              
+              <PricingPlans />
+            </main>
+          )}
           
-          <Footer />
+          {currentView === 'home' && <Footer />}
         </div>
         
         <Toaster />

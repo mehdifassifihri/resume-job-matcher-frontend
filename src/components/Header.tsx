@@ -1,10 +1,14 @@
 import { Button } from "./ui/button"
 import { ThemeToggle } from "./ui/theme-toggle"
 import { motion, AnimatePresence } from "framer-motion"
-import { Menu, X, Home, Info, DollarSign } from "lucide-react"
+import { Menu, X, Home, Info, DollarSign, LayoutDashboard, Sparkles } from "lucide-react"
 import { useState, useEffect } from "react"
 
-export function Header() {
+interface HeaderProps {
+  onNavigate?: (sectionId: string) => void
+}
+
+export function Header({ onNavigate }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('home')
 
@@ -31,9 +35,13 @@ export function Header() {
   }, [])
 
   const scrollToSection = (sectionId: string) => {
-    const element = document.querySelector(`[data-section="${sectionId}"]`)
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' })
+    if (onNavigate) {
+      onNavigate(sectionId)
+    } else {
+      const element = document.querySelector(`[data-section="${sectionId}"]`)
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' })
+      }
     }
     setIsMenuOpen(false)
   }
@@ -59,17 +67,14 @@ export function Header() {
           transition={{ type: "spring", stiffness: 400, damping: 10 }}
           onClick={() => scrollToSection('home')}
         >
-          <div className="relative">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
-              <span className="text-white font-bold text-lg">AI</span>
-            </div>
-            <div className="absolute -top-1 -right-1 w-3 h-3 bg-success rounded-full animate-pulse"></div>
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
+            <Sparkles className="w-5 h-5 text-white" />
           </div>
           <div className="hidden sm:block">
-            <h1 className="text-lg font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            <h1 className="text-lg font-bold text-slate-900 dark:text-white">
               Resume Matcher
             </h1>
-            <p className="text-xs text-neutral-text-secondary">AI-powered</p>
+            <p className="text-xs text-slate-600 dark:text-slate-400">AI-powered job matching</p>
           </div>
         </motion.div>
 
@@ -103,11 +108,35 @@ export function Header() {
 
         {/* Actions Desktop */}
         <div className="hidden md:flex items-center space-x-3">
+          {/* Dashboard button - Hidden for now but keeping code */}
+          {false && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => scrollToSection('dashboard')}
+              className="flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-white/50 dark:hover:bg-neutral-surface-alt/50 text-neutral-text-primary hover:text-primary border-white/20 dark:border-[#0b1020]/50"
+            >
+              <LayoutDashboard className="h-4 w-4" />
+              <span className="font-medium">Dashboard</span>
+            </Button>
+          )}
           <ThemeToggle />
         </div>
 
         {/* Menu Mobile Button */}
         <div className="md:hidden flex items-center space-x-2">
+          {/* Dashboard button - Hidden for now but keeping code */}
+          {false && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => scrollToSection('dashboard')}
+              className="flex items-center space-x-1 px-3 py-2 rounded-lg transition-all duration-200 hover:bg-white/50 dark:hover:bg-neutral-surface-alt/50 text-neutral-text-primary hover:text-primary border-white/20 dark:border-[#0b1020]/50"
+            >
+              <LayoutDashboard className="h-4 w-4" />
+              <span className="text-sm font-medium">Dashboard</span>
+            </Button>
+          )}
           <ThemeToggle />
           <motion.button
             whileHover={{ scale: 1.05 }}
@@ -155,6 +184,24 @@ export function Header() {
                   </motion.div>
                 )
               })}
+              
+              {/* Dashboard Button in Mobile Menu - Hidden for now but keeping code */}
+              {false && (
+                <motion.div
+                  whileHover={{ x: 5 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Button 
+                    variant="outline"
+                    size="sm"
+                    onClick={() => scrollToSection('dashboard')}
+                    className="w-full justify-start space-x-3 rounded-lg border-white/20 dark:border-[#0b1020]/50 hover:bg-white/50 dark:hover:bg-neutral-surface-alt/50"
+                  >
+                    <LayoutDashboard className="h-4 w-4" />
+                    <span className="font-medium">Dashboard</span>
+                  </Button>
+                </motion.div>
+              )}
               
             </div>
           </motion.div>

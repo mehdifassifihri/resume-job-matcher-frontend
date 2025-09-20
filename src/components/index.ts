@@ -1,0 +1,12 @@
+// Export all components
+export { Dashboard } from './Dashboard'
+export { CVUploadBlock } from './CVUploadBlock'
+export { AutoApplyPreferences } from './AutoApplyPreferences'
+export { ConnectionsConsent } from './ConnectionsConsent'
+export { Header } from './Header'
+export { HeroUpload } from './HeroUpload'
+export { HowItWorks } from './HowItWorks'
+export { AutoApplySection } from './AutoApplySection'
+export { ResultPanel } from './ResultPanel'
+export { PricingPlans } from './PricingPlans'
+export { Footer } from './Footer'

@@ -1,8 +1,7 @@
 import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 import { Badge } from './ui/badge'
-import { motion } from 'framer-motion'
-import { CheckCircle, XCircle, AlertTriangle, Target, TrendingUp, Brain } from 'lucide-react'
+import { CheckCircle, XCircle, AlertTriangle, Target, Brain } from 'lucide-react'
 import { APIResponse } from '../lib/api'
 
 interface AnalysisDetailsProps {
@@ -10,7 +9,7 @@ interface AnalysisDetailsProps {
 }
 
 export function AnalysisDetails({ apiResponse }: AnalysisDetailsProps) {
-  const { gaps, flags, rationale, coverage } = apiResponse
+  const { gaps, rationale, coverage } = apiResponse
 
   return (
     <div className="space-y-6">

@@ -3,9 +3,8 @@ import { motion } from "framer-motion"
 import { Button } from "./ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
 import { Progress } from "./ui/progress"
-import { Badge } from "./ui/badge"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog"
-import { Copy, Download, FileText, TrendingUp, Target, Lightbulb, Palette, Check, X, AlertTriangle, Plus } from "lucide-react"
+import { Copy, Download, FileText, TrendingUp, Target, Lightbulb, Palette, Check, AlertTriangle, Plus } from "lucide-react"
 import { copyToClipboard, downloadMock, formatPercentage } from "../lib/utils"
 import { useToast } from "./ui/use-toast"
 import { TemplateSystem } from "./TemplateSystem"
@@ -82,29 +81,6 @@ export function ResultPanel({ score, coverage, recommendations, adaptedCV, isVis
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
     >
-      {/* Error Display */}
-      {error && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-6"
-        >
-          <Card className="bg-red-50 border-red-200">
-            <CardContent className="pt-6">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
-                  <span className="text-red-600 text-sm font-bold">!</span>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-red-800">API Error</h3>
-                  <p className="text-red-700 text-sm">{error}</p>
-                  <p className="text-red-600 text-xs mt-1">Using fallback data for demonstration.</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-      )}
 
       {/* Background Effects */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />

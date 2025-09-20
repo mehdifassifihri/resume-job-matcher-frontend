@@ -10,8 +10,8 @@ import n8nLogo from "../assets/n8n.png"
 export function AutoApplySection() {
   return (
     <section className="relative py-24 px-4 sm:px-6 lg:px-8">
-      {/* Minimal background effect */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/3 to-transparent" />
+      {/* Enhanced background effect for dark mode */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/3 dark:via-primary/8 to-transparent" />
       
       <div className="container mx-auto max-w-4xl relative z-10">
         {/* Header */}
@@ -85,7 +85,7 @@ export function AutoApplySection() {
             </div>
 
             <div className="pt-4">
-              <button className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-poppins-semibold hover:bg-blue-700 transition-colors">
+              <button className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 dark:bg-blue-500 text-white rounded-lg font-poppins-semibold hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors shadow-lg dark:shadow-blue-500/25">
                 <Play className="w-4 h-4" />
                 Get Early Access
                 <ArrowRight className="w-4 h-4" />
@@ -101,9 +101,9 @@ export function AutoApplySection() {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="relative"
           >
-            <div className="bg-white/50 dark:bg-neutral-surface/80 backdrop-blur-sm rounded-2xl p-8 border border-white/20 dark:border-neutral-border/50 shadow-lg">
+            <div className="bg-white/50 dark:bg-neutral-surface backdrop-blur-sm rounded-2xl p-8 border border-white/20 dark:border-neutral-border shadow-lg dark:shadow-2xl">
               <div className="text-center">
-                <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 dark:from-blue-400 dark:to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg dark:shadow-blue-500/30">
                   <Bot className="w-10 h-10 text-white" />
                 </div>
                 
@@ -115,14 +115,14 @@ export function AutoApplySection() {
                 </p>
                 
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between py-2 px-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800/30">
-                    <span className="text-sm font-poppins-medium text-green-800 dark:text-green-300">Applications Today</span>
-                    <span className="text-lg font-poppins-bold text-green-600 dark:text-green-400">12</span>
+                  <div className="flex items-center justify-between py-3 px-4 bg-green-50 dark:bg-green-900/30 rounded-lg border border-green-200 dark:border-green-700/50 shadow-sm dark:shadow-green-500/10">
+                    <span className="text-sm font-poppins-medium text-green-800 dark:text-green-200">Applications Today</span>
+                    <span className="text-lg font-poppins-bold text-green-600 dark:text-green-300">12</span>
                   </div>
                   
-                  <div className="flex items-center justify-between py-2 px-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800/30">
-                    <span className="text-sm font-poppins-medium text-blue-800 dark:text-blue-300">Match Rate</span>
-                    <span className="text-lg font-poppins-bold text-blue-600 dark:text-blue-400">94%</span>
+                  <div className="flex items-center justify-between py-3 px-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-700/50 shadow-sm dark:shadow-blue-500/10">
+                    <span className="text-sm font-poppins-medium text-blue-800 dark:text-blue-200">Match Rate</span>
+                    <span className="text-lg font-poppins-bold text-blue-600 dark:text-blue-300">94%</span>
                   </div>
                 </div>
               </div>

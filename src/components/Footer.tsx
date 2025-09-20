@@ -1,5 +1,5 @@
 import { motion } from "framer-motion"
-import { FileText, Target } from "lucide-react"
+import { Sparkles } from "lucide-react"
 
 export function Footer() {
   return (
@@ -22,14 +22,14 @@ export function Footer() {
         <div className="grid md:grid-cols-4 gap-8">
           {/* Logo et description */}
           <div className="md:col-span-2">
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="h-8 w-8 rounded-lg bg-gradient-to-r from-primary to-accent flex items-center justify-center">
-                <div className="flex items-center justify-center">
-                  <FileText className="w-4 h-4 text-white" />
-                  <Target className="w-2 h-2 text-white -ml-1 -mt-1" />
-                </div>
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center shadow-lg">
+                <Sparkles className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">AI Job Matcher</span>
+              <div>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">Resume Matcher</h3>
+                <p className="text-slate-600 dark:text-slate-400 text-sm">AI-powered job matching</p>
+              </div>
             </div>
             <p className="text-neutral-text-secondary mb-4 max-w-md">
               Optimize your chances of landing your dream job with our system that adapts your CV to job offers.

@@ -106,16 +106,16 @@ Responsibilities:
 // Run all tests
 export const runAllTests = async () => {
   console.log('🧪 Starting API tests...')
-  console.log('=' .repeat(50))
+  console.log('='.repeat(50))
   
   // Test 1: Health check
   const healthTest = await testApiPerformance()
-  console.log('=' .repeat(50))
+  console.log('='.repeat(50))
   
   // Test 2: File upload (only if health check passed)
   if (healthTest.success) {
     const uploadTest = await testWithSampleFiles()
-    console.log('=' .repeat(50))
+    console.log('='.repeat(50))
     
     console.log('📋 Test Summary:')
     console.log(`Health Check: ${healthTest.success ? '✅ PASS' : '❌ FAIL'}`)
