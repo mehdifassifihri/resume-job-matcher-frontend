@@ -2,7 +2,7 @@
 export const config = {
   // API Configuration
   api: {
-    baseURL: process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000',
+    baseURL: process.env.REACT_APP_API_BASE_URL || 'https://web-production-fb736.up.railway.app',
     timeout: parseInt(process.env.REACT_APP_API_TIMEOUT || '120000'), // 2 minutes
     endpoints: {
       upload: '/match/upload',
