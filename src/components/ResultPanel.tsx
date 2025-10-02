@@ -252,14 +252,14 @@ export function ResultPanel({ score, coverage, recommendations, adaptedCV, isVis
                 <div className="space-y-6">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-                        <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                      <div className="w-8 h-8 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                        <Check className="w-4 h-4 text-green-600 dark:text-green-400" />
                       </div>
                       <h4 className="text-lg font-poppins font-semibold text-neutral-text-primary">Matched Skills</h4>
                     </div>
-                    <div className="flex items-center space-x-2 px-3 py-1.5 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg border border-emerald-200 dark:border-emerald-800/30">
-                      <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                      <span className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
+                    <div className="flex items-center space-x-2 px-3 py-1.5 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800/30">
+                      <Check className="w-4 h-4 text-green-600 dark:text-green-400" />
+                      <span className="text-sm font-medium text-green-700 dark:text-green-300">
                         {apiResponse?.gaps?.matched_skills?.length || 6} skills
                       </span>
                     </div>
@@ -274,9 +274,9 @@ export function ResultPanel({ score, coverage, recommendations, adaptedCV, isVis
                           transition={{ delay: 2.0 + (index * 0.05), duration: 0.4, ease: "easeOut" }}
                           className="group"
                         >
-                          <div className="flex items-center space-x-2 p-3 bg-white dark:bg-neutral-surface rounded-xl border border-emerald-200 dark:border-emerald-800/30 hover:border-emerald-300 dark:hover:border-emerald-700/50 hover:shadow-md transition-all duration-200">
-                            <div className="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-                              <Check className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+                          <div className="flex items-center space-x-2 p-3 bg-white dark:bg-neutral-surface rounded-xl border border-green-200 dark:border-green-800/30 hover:border-green-300 dark:hover:border-green-700/50 hover:shadow-md transition-all duration-200">
+                            <div className="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                              <Check className="w-3 h-3 text-green-600 dark:text-green-400" />
                             </div>
                             <span className="text-sm font-medium text-neutral-text-primary truncate">{skill}</span>
                           </div>
@@ -290,9 +290,9 @@ export function ResultPanel({ score, coverage, recommendations, adaptedCV, isVis
                           transition={{ delay: 2.0, duration: 0.4, ease: "easeOut" }}
                           className="group"
                         >
-                          <div className="flex items-center space-x-2 p-3 bg-white dark:bg-neutral-surface rounded-xl border border-emerald-200 dark:border-emerald-800/30 hover:border-emerald-300 dark:hover:border-emerald-700/50 hover:shadow-md transition-all duration-200">
-                            <div className="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-                              <Check className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+                          <div className="flex items-center space-x-2 p-3 bg-white dark:bg-neutral-surface rounded-xl border border-green-200 dark:border-green-800/30 hover:border-green-300 dark:hover:border-green-700/50 hover:shadow-md transition-all duration-200">
+                            <div className="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                              <Check className="w-3 h-3 text-green-600 dark:text-green-400" />
                             </div>
                             <span className="text-sm font-medium text-neutral-text-primary">React</span>
                           </div>
@@ -303,9 +303,9 @@ export function ResultPanel({ score, coverage, recommendations, adaptedCV, isVis
                           transition={{ delay: 2.05, duration: 0.4, ease: "easeOut" }}
                           className="group"
                         >
-                          <div className="flex items-center space-x-2 p-3 bg-white dark:bg-neutral-surface rounded-xl border border-emerald-200 dark:border-emerald-800/30 hover:border-emerald-300 dark:hover:border-emerald-700/50 hover:shadow-md transition-all duration-200">
-                            <div className="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-                              <Check className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+                          <div className="flex items-center space-x-2 p-3 bg-white dark:bg-neutral-surface rounded-xl border border-green-200 dark:border-green-800/30 hover:border-green-300 dark:hover:border-green-700/50 hover:shadow-md transition-all duration-200">
+                            <div className="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                              <Check className="w-3 h-3 text-green-600 dark:text-green-400" />
                             </div>
                             <span className="text-sm font-medium text-neutral-text-primary">Node.js</span>
                           </div>
@@ -316,9 +316,9 @@ export function ResultPanel({ score, coverage, recommendations, adaptedCV, isVis
                           transition={{ delay: 2.1, duration: 0.4, ease: "easeOut" }}
                           className="group"
                         >
-                          <div className="flex items-center space-x-2 p-3 bg-white dark:bg-neutral-surface rounded-xl border border-emerald-200 dark:border-emerald-800/30 hover:border-emerald-300 dark:hover:border-emerald-700/50 hover:shadow-md transition-all duration-200">
-                            <div className="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-                              <Check className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+                          <div className="flex items-center space-x-2 p-3 bg-white dark:bg-neutral-surface rounded-xl border border-green-200 dark:border-green-800/30 hover:border-green-300 dark:hover:border-green-700/50 hover:shadow-md transition-all duration-200">
+                            <div className="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                              <Check className="w-3 h-3 text-green-600 dark:text-green-400" />
                             </div>
                             <span className="text-sm font-medium text-neutral-text-primary">TypeScript</span>
                           </div>
@@ -329,9 +329,9 @@ export function ResultPanel({ score, coverage, recommendations, adaptedCV, isVis
                           transition={{ delay: 2.15, duration: 0.4, ease: "easeOut" }}
                           className="group"
                         >
-                          <div className="flex items-center space-x-2 p-3 bg-white dark:bg-neutral-surface rounded-xl border border-emerald-200 dark:border-emerald-800/30 hover:border-emerald-300 dark:hover:border-emerald-700/50 hover:shadow-md transition-all duration-200">
-                            <div className="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-                              <Check className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+                          <div className="flex items-center space-x-2 p-3 bg-white dark:bg-neutral-surface rounded-xl border border-green-200 dark:border-green-800/30 hover:border-green-300 dark:hover:border-green-700/50 hover:shadow-md transition-all duration-200">
+                            <div className="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                              <Check className="w-3 h-3 text-green-600 dark:text-green-400" />
                             </div>
                             <span className="text-sm font-medium text-neutral-text-primary">PostgreSQL</span>
                           </div>
@@ -342,9 +342,9 @@ export function ResultPanel({ score, coverage, recommendations, adaptedCV, isVis
                           transition={{ delay: 2.2, duration: 0.4, ease: "easeOut" }}
                           className="group"
                         >
-                          <div className="flex items-center space-x-2 p-3 bg-white dark:bg-neutral-surface rounded-xl border border-blue-200 dark:border-blue-800/30 hover:border-blue-300 dark:hover:border-blue-700/50 hover:shadow-md transition-all duration-200">
-                            <div className="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                              <Check className="w-3 h-3 text-blue-600 dark:text-blue-400" />
+                          <div className="flex items-center space-x-2 p-3 bg-white dark:bg-neutral-surface rounded-xl border border-green-200 dark:border-green-800/30 hover:border-green-300 dark:hover:border-green-700/50 hover:shadow-md transition-all duration-200">
+                            <div className="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                              <Check className="w-3 h-3 text-green-600 dark:text-green-400" />
                             </div>
                             <span className="text-sm font-medium text-neutral-text-primary">Docker</span>
                           </div>
@@ -355,9 +355,9 @@ export function ResultPanel({ score, coverage, recommendations, adaptedCV, isVis
                           transition={{ delay: 2.25, duration: 0.4, ease: "easeOut" }}
                           className="group"
                         >
-                          <div className="flex items-center space-x-2 p-3 bg-white dark:bg-neutral-surface rounded-xl border border-amber-200 dark:border-amber-800/30 hover:border-amber-300 dark:hover:border-amber-700/50 hover:shadow-md transition-all duration-200">
-                            <div className="w-6 h-6 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
-                              <Check className="w-3 h-3 text-amber-600 dark:text-amber-400" />
+                          <div className="flex items-center space-x-2 p-3 bg-white dark:bg-neutral-surface rounded-xl border border-green-200 dark:border-green-800/30 hover:border-green-300 dark:hover:border-green-700/50 hover:shadow-md transition-all duration-200">
+                            <div className="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                              <Check className="w-3 h-3 text-green-600 dark:text-green-400" />
                             </div>
                             <span className="text-sm font-medium text-neutral-text-primary">AWS</span>
                           </div>
@@ -372,14 +372,14 @@ export function ResultPanel({ score, coverage, recommendations, adaptedCV, isVis
                   <div className="space-y-6">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
-                          <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                        <div className="w-8 h-8 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                          <AlertTriangle className="w-4 h-4 text-red-600 dark:text-red-400" />
                         </div>
                         <h4 className="text-lg font-poppins font-semibold text-neutral-text-primary">Missing Skills</h4>
                       </div>
-                      <div className="flex items-center space-x-2 px-3 py-1.5 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800/30">
-                        <Plus className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                        <span className="text-sm font-medium text-amber-700 dark:text-amber-300">
+                      <div className="flex items-center space-x-2 px-3 py-1.5 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800/30">
+                        <Plus className="w-4 h-4 text-red-600 dark:text-red-400" />
+                        <span className="text-sm font-medium text-red-700 dark:text-red-300">
                           {apiResponse?.gaps?.missing_skills?.length || 3} to learn
                         </span>
                       </div>
@@ -394,9 +394,9 @@ export function ResultPanel({ score, coverage, recommendations, adaptedCV, isVis
                             transition={{ delay: 2.6 + (index * 0.05), duration: 0.4, ease: "easeOut" }}
                             className="group"
                           >
-                            <div className="flex items-center space-x-2 p-3 bg-white dark:bg-neutral-surface rounded-xl border border-amber-200 dark:border-amber-800/30 hover:border-amber-300 dark:hover:border-amber-700/50 hover:shadow-md transition-all duration-200">
-                              <div className="w-6 h-6 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
-                                <Plus className="w-3 h-3 text-amber-600 dark:text-amber-400" />
+                            <div className="flex items-center space-x-2 p-3 bg-white dark:bg-neutral-surface rounded-xl border border-red-200 dark:border-red-800/30 hover:border-red-300 dark:hover:border-red-700/50 hover:shadow-md transition-all duration-200">
+                              <div className="w-6 h-6 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                                <Plus className="w-3 h-3 text-red-600 dark:text-red-400" />
                               </div>
                               <span className="text-sm font-medium text-neutral-text-primary truncate">{skill}</span>
                             </div>
@@ -410,9 +410,9 @@ export function ResultPanel({ score, coverage, recommendations, adaptedCV, isVis
                             transition={{ delay: 2.6, duration: 0.4, ease: "easeOut" }}
                             className="group"
                           >
-                            <div className="flex items-center space-x-2 p-3 bg-white dark:bg-neutral-surface rounded-xl border border-amber-200 dark:border-amber-800/30 hover:border-amber-300 dark:hover:border-amber-700/50 hover:shadow-md transition-all duration-200">
-                              <div className="w-6 h-6 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
-                                <Plus className="w-3 h-3 text-amber-600 dark:text-amber-400" />
+                            <div className="flex items-center space-x-2 p-3 bg-white dark:bg-neutral-surface rounded-xl border border-red-200 dark:border-red-800/30 hover:border-red-300 dark:hover:border-red-700/50 hover:shadow-md transition-all duration-200">
+                              <div className="w-6 h-6 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                                <Plus className="w-3 h-3 text-red-600 dark:text-red-400" />
                               </div>
                               <span className="text-sm font-medium text-neutral-text-primary">Kubernetes</span>
                             </div>
@@ -423,9 +423,9 @@ export function ResultPanel({ score, coverage, recommendations, adaptedCV, isVis
                             transition={{ delay: 2.65, duration: 0.4, ease: "easeOut" }}
                             className="group"
                           >
-                            <div className="flex items-center space-x-2 p-3 bg-white dark:bg-neutral-surface rounded-xl border border-amber-200 dark:border-amber-800/30 hover:border-amber-300 dark:hover:border-amber-700/50 hover:shadow-md transition-all duration-200">
-                              <div className="w-6 h-6 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
-                                <Plus className="w-3 h-3 text-amber-600 dark:text-amber-400" />
+                            <div className="flex items-center space-x-2 p-3 bg-white dark:bg-neutral-surface rounded-xl border border-red-200 dark:border-red-800/30 hover:border-red-300 dark:hover:border-red-700/50 hover:shadow-md transition-all duration-200">
+                              <div className="w-6 h-6 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                                <Plus className="w-3 h-3 text-red-600 dark:text-red-400" />
                               </div>
                               <span className="text-sm font-medium text-neutral-text-primary">Redis</span>
                             </div>
@@ -436,9 +436,9 @@ export function ResultPanel({ score, coverage, recommendations, adaptedCV, isVis
                             transition={{ delay: 2.7, duration: 0.4, ease: "easeOut" }}
                             className="group"
                           >
-                            <div className="flex items-center space-x-2 p-3 bg-white dark:bg-neutral-surface rounded-xl border border-amber-200 dark:border-amber-800/30 hover:border-amber-300 dark:hover:border-amber-700/50 hover:shadow-md transition-all duration-200">
-                              <div className="w-6 h-6 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
-                                <Plus className="w-3 h-3 text-amber-600 dark:text-amber-400" />
+                            <div className="flex items-center space-x-2 p-3 bg-white dark:bg-neutral-surface rounded-xl border border-red-200 dark:border-red-800/30 hover:border-red-300 dark:hover:border-red-700/50 hover:shadow-md transition-all duration-200">
+                              <div className="w-6 h-6 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                                <Plus className="w-3 h-3 text-red-600 dark:text-red-400" />
                               </div>
                               <span className="text-sm font-medium text-neutral-text-primary">GraphQL</span>
                             </div>
@@ -465,7 +465,7 @@ export function ResultPanel({ score, coverage, recommendations, adaptedCV, isVis
             <CardHeader className="relative z-10">
               <div className="flex items-center space-x-3">
                 <motion.div 
-                  className="w-12 h-12 rounded-2xl bg-gradient-to-r from-warning to-accent flex items-center justify-center shadow-lg"
+                  className="w-12 h-12 rounded-2xl bg-gradient-to-r from-primary to-accent flex items-center justify-center shadow-lg"
                   whileHover={{ rotate: 360 }}
                   transition={{ duration: 0.6 }}
                 >
@@ -486,7 +486,7 @@ export function ResultPanel({ score, coverage, recommendations, adaptedCV, isVis
                     whileHover={{ scale: 1.02, x: 5 }}
                   >
                     <motion.div 
-                      className="w-3 h-3 rounded-full bg-gradient-to-r from-warning to-accent mt-2 flex-shrink-0 shadow-lg"
+                      className="w-3 h-3 rounded-full bg-gradient-to-r from-primary to-accent mt-2 flex-shrink-0 shadow-lg"
                       animate={{
                         scale: [1, 1.2, 1],
                         opacity: [0.7, 1, 0.7],
@@ -520,7 +520,7 @@ export function ResultPanel({ score, coverage, recommendations, adaptedCV, isVis
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <motion.div 
-                    className="w-12 h-12 rounded-2xl bg-gradient-to-r from-success to-primary flex items-center justify-center shadow-lg"
+                    className="w-12 h-12 rounded-2xl bg-gradient-to-r from-primary to-accent flex items-center justify-center shadow-lg"
                     whileHover={{ rotate: 360 }}
                     transition={{ duration: 0.6 }}
                   >

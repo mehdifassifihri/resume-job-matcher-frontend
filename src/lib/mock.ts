@@ -105,14 +105,14 @@ Senior Full Stack Developer, 2021-2024
 STARTUPXYZ, San Francisco, California
 Full Stack Developer, 2019-2021
 - Built responsive web applications using React, TypeScript, and Node.js for e-commerce platform
-- Developed RESTful APIs and integrated third-party services (Stripe, Twilio, AWS)
+- Developed RESTful APIs and integrated third-party services (Twilio, AWS)
 - Implemented automated testing strategies, achieving 90% code coverage
 - Participated in agile development process and daily standups with product and design teams
 
 SOFTWARE ENGINEERING PROJECTS
 E-Commerce Platform - Full Stack Developer
 - Developed a complete e-commerce solution using React, Node.js, and PostgreSQL
-- Implemented payment processing with Stripe API and real-time inventory management
+- Implemented real-time inventory management and order processing
 - Deployed application on AWS with Docker containers and automated CI/CD pipeline
 
 Task Management App - Frontend Developer
@@ -136,6 +136,18 @@ export const mockStructuredResume = {
   summary: "Analytical and results-driven Full Stack Software Engineer with 5+ years of experience in modern web development. Expert in JavaScript, TypeScript, React, Node.js, and cloud technologies. Proven track record of building scalable applications, leading development teams, and implementing innovative solutions that enhance efficiency and improve user experience. Strong background in both frontend and backend development with expertise in DevOps practices.",
   experience: [
     {
+      company: "STARTUPXYZ",
+      title: "Full Stack Developer",
+      start_date: "2019",
+      end_date: "2021",
+      achievements: [
+        "Built responsive web applications using React, TypeScript, and Node.js for e-commerce platform",
+        "Developed RESTful APIs and integrated third-party services (Twilio, AWS)",
+        "Implemented automated testing strategies, achieving 90% code coverage",
+        "Participated in agile development process and daily standups with product and design teams"
+      ]
+    },
+    {
       company: "TECH CORP",
       title: "Senior Full Stack Developer",
       start_date: "2021",
@@ -146,18 +158,6 @@ export const mockStructuredResume = {
         "Collaborated with cross-functional teams to deliver high-quality features on time and within budget",
         "Mentored 3 junior developers and established coding standards and best practices",
         "Optimized database queries and application performance, improving response time by 40%"
-      ]
-    },
-    {
-      company: "STARTUPXYZ",
-      title: "Full Stack Developer",
-      start_date: "2019",
-      end_date: "2021",
-      achievements: [
-        "Built responsive web applications using React, TypeScript, and Node.js for e-commerce platform",
-        "Developed RESTful APIs and integrated third-party services (Stripe, Twilio, AWS)",
-        "Implemented automated testing strategies, achieving 90% code coverage",
-        "Participated in agile development process and daily standups with product and design teams"
       ]
     }
   ],
@@ -170,9 +170,10 @@ export const mockStructuredResume = {
     }
   ],
   skills: {
-    technical: ["JavaScript", "TypeScript", "Python", "Java", "SQL", "HTML/CSS", "C++", "React", "React Native", "Angular", "Vue.js", "Redux", "Next.js", "Node.js", "Express.js", "Django", "Spring Boot", "PostgreSQL", "MongoDB", "MySQL", "Redis", "AWS", "Docker", "Kubernetes", "CI/CD", "Git", "Jenkins"],
-    soft: ["Leadership", "Communication", "Team Collaboration", "Problem Solving"],
-    languages: ["English (Native)", "Spanish (Fluent)", "French (Conversational)"]
+    languages: ["Python", "Java", "C", "C++", "C#", "SQL", "NoSQL"],
+    tools: ["Git", "Unity", "ARCore", "Android Studio"],
+    libraries: ["Django", "NLTK", "TensorFlow", "PyTorch"],
+    other: ["API Development", "Cloud Platforms (AWS, GCP)"]
   },
   certifications: [
     {
@@ -190,9 +191,9 @@ export const mockStructuredResume = {
     {
       name: "E-Commerce Platform",
       description: "Developed a complete e-commerce solution using React, Node.js, and PostgreSQL",
-      technologies_used: ["React", "Node.js", "PostgreSQL", "Stripe API", "AWS", "Docker"],
+      technologies_used: ["React", "Node.js", "PostgreSQL", "AWS", "Docker"],
       achievements: [
-        "Implemented payment processing with Stripe API and real-time inventory management",
+        "Implemented real-time inventory management and order processing",
         "Deployed application on AWS with Docker containers and automated CI/CD pipeline"
       ]
     },
@@ -211,4 +212,192 @@ export const mockStructuredResume = {
     "Reduced deployment time by 60% through CI/CD pipeline optimization",
     "Achieved 90% code coverage through automated testing strategies"
   ]
+}
+
+// Test data with minimal sections (for testing flexibility)
+export const mockMinimalResume = {
+  contact_info: {
+    name: "Jane Smith",
+    email: "jane.smith@email.com",
+    phone: "(555) 987-6543",
+    location: "New York, NY",
+    photo: undefined
+  },
+  summary: "Experienced developer with strong technical skills.",
+  skills: {
+    languages: ["JavaScript", "Python"],
+    tools: ["Git"],
+    libraries: [],
+    other: []
+  },
+  experience: [
+    {
+      company: "Tech Startup",
+      title: "Developer",
+      start_date: "2022",
+      end_date: "2024",
+      achievements: [
+        "Built web applications",
+        "Collaborated with team"
+      ]
+    }
+  ]
+  // Note: No education, certifications, projects, or achievements sections
+}
+
+// Test data with only some sections
+export const mockPartialResume = {
+  contact_info: {
+    name: "Mike Johnson",
+    email: "mike.j@email.com",
+    phone: "(555) 555-5555",
+    location: "Seattle, WA",
+    photo: undefined
+  },
+  summary: "Senior engineer with extensive experience.",
+  education: [
+    {
+      degree: "Master of Science, Software Engineering",
+      institution: "University of Washington",
+      start_date: "2018",
+      end_date: "2020"
+    }
+  ],
+  skills: {
+    languages: ["Java", "C++"],
+    tools: ["IntelliJ", "Maven"],
+    libraries: ["Spring Boot", "Hibernate"],
+    other: ["Microservices", "DevOps"]
+  },
+  certifications: [
+    {
+      name: "Oracle Certified Professional",
+      issuer: "Oracle",
+      date: "2021"
+    }
+  ]
+  // Note: No experience, projects, or achievements sections
+}
+
+// Simple test CV with just skills to debug the issue
+export const mockSkillsTestResume = {
+  contact_info: {
+    name: "Test User",
+    email: "test@example.com",
+    phone: "123-456-7890",
+    location: "Test City",
+    photo: undefined
+  },
+  summary: "Test resume for debugging skills section.",
+  skills: {
+    languages: ["Python", "Java", "JavaScript"],
+    tools: ["Git", "Docker"],
+    libraries: ["React", "Django"],
+    other: ["API Development"]
+  }
+}
+
+// Real CV example from Monisha with comprehensive sections
+export const mockComprehensiveResume = {
+  contact_info: {
+    name: "Monisha Jegadeesan",
+    email: "monishaj.65@gmail.com",
+    phone: "+91 9035212894",
+    website: "monisha-jega.github.io",
+    linkedin: "monisha-jega"
+  },
+  summary: "Detail-oriented Software Engineer with 3.5 years of experience in backend engineering, specializing in Python and Java. Proven track record in developing and maintaining backend services, optimizing systems for scalability and performance, and collaborating with cross-functional teams. Strong problem-solving skills with a focus on clean, maintainable code and RESTful API design.",
+  experience: [
+    {
+      company: "Google LLC",
+      title: "Software Engineer, Level IV",
+      start_date: "Dec 2022",
+      end_date: "Present",
+      achievements: [
+        "Working on Keep, a notetaking editor in Google Workspace, contributing to backend services and API development."
+      ]
+    },
+    {
+      company: "Google India Pvt Ltd",
+      title: "Software Engineer, Level IV",
+      start_date: "Aug 2020",
+      end_date: "Nov 2022",
+      achievements: [
+        "Developed intelligent features for Google Workspace Editors (Docs, Slides, Keep) using Python and Java, enhancing backend functionalities.",
+        "Collaborated with senior engineers to design and implement targeting algorithms for audience engagement.",
+        "Participated in code reviews, ensuring code quality and adherence to best practices.",
+        "Assisted in optimizing backend systems for scalability and performance, contributing to system optimizations.",
+        "Guided junior engineers on programming and software design tasks."
+      ]
+    }
+  ],
+  education: [
+    {
+      degree: "Dual Degree (B.Tech + M.Tech) in Computer Science and Engineering",
+      institution: "Indian Institute of Technology Madras, Chennai, India",
+      start_date: "2015",
+      end_date: "2020"
+    }
+  ],
+  skills: {
+    languages: ["Python", "Java", "C", "C++", "C#", "SQL", "NoSQL"],
+    tools: ["Git", "Unity", "ARCore", "Android Studio"],
+    libraries: ["Django", "NLTK", "TensorFlow", "PyTorch"],
+    other: ["API Development", "Cloud Platforms (AWS, GCP)"]
+  },
+  certifications: [],
+  projects: [
+    {
+      name: "Graph Neural Networks for Extreme Summarization",
+      description: "Formulated graph-based deep neural models for Extreme Summarization, improving performance metrics.",
+      technologies_used: ["Graph Neural Networks", "Deep Learning"]
+    },
+    {
+      name: "Risk-Sensitivity in Multi-Armed Bandits",
+      description: "Implemented risk-sensitivity methods for stochastic bandit problems, enhancing backend algorithms.",
+      technologies_used: ["Python", "Algorithms"]
+    }
+  ],
+  achievements: [
+    "First runner-up in the AWS Deep Learning Hackathon held during Shaastra 2018, IIT Madras.",
+    "State Rank 17 in Karnataka Common Entrance Test for Engineering, 2015.",
+    "Topped respective academic institutions in both Class X and Class XII board exams."
+  ],
+  awards: [],
+  publications: [
+    {
+      title: "Improving the Diversity of Unsupervised Paraphrasing with Embedding Outputs",
+      journal: "EMNLP 2021"
+    },
+    {
+      title: "Adversarial Demotion of Gender Bias in Natural Language Generation",
+      journal: "ACM CODS-COMAD 2020"
+    }
+  ],
+  volunteer_work: [],
+  interests: [],
+  references: [],
+  languages: [
+    {
+      name: "English",
+      proficiency: "Fluent"
+    }
+  ],
+  additional_sections: {
+    "Positions of Responsibility": [
+      {
+        role: "Organizer",
+        event: "Tech Intern Connect",
+        organization: "Google India Pvt Ltd, Bangalore"
+      }
+    ],
+    "Extra Curricular Activities": [
+      {
+        activity: "Trained in Bharatanatyam for eight years"
+      },
+      {
+        activity: "Participated in NSO Basketball"
+      }
+    ]
+  }
 }

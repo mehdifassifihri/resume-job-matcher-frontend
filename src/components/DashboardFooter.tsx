@@ -15,7 +15,7 @@ export function DashboardFooter() {
   }
 
   return (
-    <footer className="relative bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-t border-slate-200/50 dark:border-slate-700/50 overflow-hidden font-poppins">
+    <footer className="relative bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-t border-slate-200/50 dark:border-slate-700/50 overflow-hidden font-poppins mt-auto">
       {/* Subtle background pattern */}
       <div className="absolute inset-0 opacity-30 dark:opacity-20">
         <div className="absolute top-0 left-1/4 w-32 h-32 bg-blue-200 dark:bg-blue-800 rounded-full mix-blend-multiply filter blur-2xl"></div>

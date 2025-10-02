@@ -2,7 +2,6 @@ import { motion } from "framer-motion"
 import { useState } from "react"
 import { Card } from "./ui/card"
 import { Button } from "./ui/button"
-import { Badge } from "./ui/badge"
 import { Input } from "./ui/input"
 import { Label } from "./ui/label"
 import { 
@@ -144,7 +143,7 @@ export function AutoApplyPreferences(_props: AutoApplyPreferencesProps) {
   ]
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-8">
       {/* Auto-Apply Toggle */}
       <Card className="p-6">
         <div className="flex items-center justify-between">

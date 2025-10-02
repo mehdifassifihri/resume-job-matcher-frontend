@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import { Header } from "../components/Header"
 import { HeroUpload } from "../components/HeroUpload"
 import { HowItWorks } from "../components/HowItWorks"
@@ -6,22 +7,30 @@ import { AutoApplySection } from "../components/AutoApplySection"
 import { ResultPanel } from "../components/ResultPanel"
 import { PricingPlans } from "../components/PricingPlans"
 import { Footer } from "../components/Footer"
+import { CompanyCarousel } from "../components/CompanyCarousel"
 import { BackgroundEffects } from "../components/BackgroundEffects"
 import { InteractiveParticles } from "../components/InteractiveParticles"
 import { ColorGradients } from "../components/ColorGradients"
-import { Dashboard } from "../components/Dashboard"
+import { SaaSDashboard } from "../components/SaaSDashboard"
 import { Toaster } from "../components/ui/toaster"
 import { ThemeProvider } from "../contexts/ThemeContext"
+import { AuthProvider, useAuth } from "../contexts/AuthContext"
+import { ProtectedRoute } from "../components/ProtectedRoute"
 import { calculateMockScore, generateMockRecommendations } from "../lib/utils"
 import { mockAdaptedCV, mockStructuredResume } from "../lib/mock"
 import { apiService, APIResponse, APIError } from "../lib/api"
+import { SuccessPage } from "./SuccessPage"
+import { CancelPage } from "./CancelPage"
+import { LoginPage } from "./LoginPage"
+import { RegisterPage } from "./RegisterPage"
 
 // Import API test utilities in development
 if (process.env.NODE_ENV === 'development') {
   import('../lib/api-test')
 }
 
-export function App() {
+// Component for the main landing page content
+function LandingPageContent() {
   const [cvContent, setCvContent] = useState("")
   const [jobDescription, setJobDescription] = useState("")
   const [isLoading, setIsLoading] = useState(false)
@@ -32,15 +41,7 @@ export function App() {
   const [apiResponse, setApiResponse] = useState<APIResponse | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [currentView, setCurrentView] = useState<'home' | 'dashboard'>('home')
-
-
-  const handleCVUpload = (content: string) => {
-    setCvContent(content)
-  }
-
-  const handleJobDescriptionUpload = (content: string) => {
-    setJobDescription(content)
-  }
+  const { isAuthenticated } = useAuth()
 
   const handleNavigation = (sectionId: string) => {
     if (sectionId === 'dashboard') {
@@ -55,8 +56,17 @@ export function App() {
     }
   }
 
-  const handleAdaptCV = async (resumeFile: File, jobFile: File) => {
-    if (!resumeFile || !jobFile) return
+
+  const handleCVUpload = (content: string) => {
+    setCvContent(content)
+  }
+
+  const handleJobDescriptionUpload = (content: string) => {
+    setJobDescription(content)
+  }
+
+  const handleAdaptCV = async (resumeFile: File, jobDescription: File | string) => {
+    if (!resumeFile || !jobDescription) return
 
     setIsLoading(true)
     setError(null)
@@ -64,7 +74,7 @@ export function App() {
     
     try {
       // Call the real API
-      const response = await apiService.uploadResumeAndJob(resumeFile, jobFile)
+      const response = await apiService.uploadResumeAndJob(resumeFile, jobDescription)
       
       // Update state with API response
       setApiResponse(response)
@@ -91,7 +101,8 @@ export function App() {
       }
       
       // Fallback to mock data in case of error
-      const calculatedScore = calculateMockScore(cvContent, jobDescription)
+      const jobDescriptionText = typeof jobDescription === 'string' ? jobDescription : ''
+      const calculatedScore = calculateMockScore(cvContent, jobDescriptionText)
       const calculatedCoverage = Math.round(calculatedScore * 0.9)
       const calculatedRecommendations = generateMockRecommendations(calculatedScore)
       
@@ -105,54 +116,96 @@ export function App() {
     }
   }
 
-
   return (
-    <ThemeProvider>
-      <div className="min-h-screen bg-neutral-bg text-neutral-text-primary transition-all duration-300 relative">
-        <BackgroundEffects />
-        <InteractiveParticles />
-        <ColorGradients />
+    <div className="min-h-screen bg-neutral-bg text-neutral-text-primary transition-all duration-300 relative">
+      <BackgroundEffects />
+      <InteractiveParticles />
+      <ColorGradients />
+      
+      <div className="relative z-10">
+        <Header onNavigate={handleNavigation} />
         
-        <div className="relative z-10">
-          <Header onNavigate={handleNavigation} />
+        <main>
+          <HeroUpload 
+            onCVUpload={handleCVUpload}
+            onJobDescriptionUpload={handleJobDescriptionUpload}
+            onAdaptCV={handleAdaptCV}
+            isLoading={isLoading}
+          />
           
-          {currentView === 'dashboard' ? (
-            <Dashboard />
-          ) : (
-            <main>
-              <HeroUpload 
-                onCVUpload={handleCVUpload}
-                onJobDescriptionUpload={handleJobDescriptionUpload}
-                onAdaptCV={handleAdaptCV}
-                isLoading={isLoading}
-              />
-              
+          {/* Marketing sections - only show for non-authenticated users */}
+          {!isAuthenticated && (
+            <>
               <HowItWorks />
-              
+              <CompanyCarousel />
               <AutoApplySection />
-              
-              <div data-results-section>
-                <ResultPanel 
-                  score={score}
-                  coverage={coverage}
-                  recommendations={recommendations}
-                  adaptedCV={apiResponse?.tailored_resume_text || mockAdaptedCV}
-                  isVisible={showResults}
-                  structuredResume={apiResponse?.structured_resume || mockStructuredResume}
-                  apiResponse={apiResponse}
-                  error={error}
-                />
-              </div>
-              
-              <PricingPlans />
-            </main>
+            </>
           )}
           
-          {currentView === 'home' && <Footer />}
-        </div>
+          <div data-results-section>
+            <ResultPanel 
+              score={score}
+              coverage={coverage}
+              recommendations={recommendations}
+              adaptedCV={apiResponse?.tailored_resume_text || mockAdaptedCV}
+              isVisible={showResults}
+              structuredResume={apiResponse?.structured_resume || mockStructuredResume}
+              apiResponse={apiResponse}
+              error={error}
+            />
+          </div>
+          
+          {/* Pricing section - only show for non-authenticated users */}
+          {!isAuthenticated && <PricingPlans />}
+        </main>
         
-        <Toaster />
+        {/* Footer - only show for non-authenticated users */}
+        {!isAuthenticated && <Footer />}
       </div>
+      
+      <Toaster />
+    </div>
+  )
+}
+
+export function App() {
+  return (
+    <ThemeProvider>
+      <AuthProvider>
+        <Router>
+          <Routes>
+            {/* Public routes */}
+            <Route path="/login" element={
+              <ProtectedRoute requireAuth={false}>
+                <LoginPage />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/register" element={
+              <ProtectedRoute requireAuth={false}>
+                <RegisterPage />
+              </ProtectedRoute>
+            } />
+            
+            {/* Success page */}
+            <Route path="/success" element={<SuccessPage />} />
+            
+            {/* Cancel page */}
+            <Route path="/cancel" element={<CancelPage />} />
+            
+
+            {/* SaaS Dashboard route */}
+            <Route path="/saas-dashboard" element={
+              <ProtectedRoute requireAuth={true}>
+                <SaaSDashboard />
+              </ProtectedRoute>
+            } />
+            
+            {/* Main app (public) */}
+            <Route path="/*" element={<LandingPageContent />} />
+          </Routes>
+        </Router>
+      </AuthProvider>
     </ThemeProvider>
   )
 }

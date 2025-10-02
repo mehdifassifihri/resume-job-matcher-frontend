@@ -34,6 +34,14 @@ export const config = {
     animationDuration: 300,
     toastDuration: 5000,
     debounceDelay: 500
+  },
+  
+  // Stripe Configuration
+  stripe: {
+    publishableKey: process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || 'pk_test_51N4TKSJt7YIMwIlquAL1PcdwrcHO4f3ESec9aiC3J0XBlcRPKMycWZuFuGYCmdW0ORtw9iihJwAyTrpXDVK7bnjf00jPD3yKM0',
+    priceId: process.env.REACT_APP_STRIPE_PRICE_ID || 'price_1234567890', // Replace with your actual price ID
+    successUrl: process.env.REACT_APP_STRIPE_SUCCESS_URL || 'http://localhost:3000/success',
+    cancelUrl: process.env.REACT_APP_STRIPE_CANCEL_URL || 'http://localhost:3000/cancel'
   }
 }
 

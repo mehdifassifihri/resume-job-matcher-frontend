@@ -99,7 +99,7 @@ export function PhotoUpload({ onPhotoChange, currentPhoto, className = "" }: Pho
   }
 
   return (
-    <Card className={`w-full max-w-md ${className}`}>
+    <Card className={`w-full max-w-md backdrop-blur-sm bg-white/80 dark:bg-gray-800/80 border-0 shadow-xl ${className}`}>
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
           <Camera className="w-5 h-5 text-primary" />
@@ -141,8 +141,8 @@ export function PhotoUpload({ onPhotoChange, currentPhoto, className = "" }: Pho
               <div className="w-24 h-24 mx-auto rounded-full bg-neutral-surface-alt flex items-center justify-center">
                 <User className="w-12 h-12 text-neutral-text-secondary" />
               </div>
-              <div>
-                <p className="text-sm text-neutral-text-secondary mb-2">
+              <div className="flex flex-col items-center">
+                <p className="text-sm text-neutral-text-secondary mb-2 text-center">
                   Drag & drop a photo here, or click to select
                 </p>
                 <Button

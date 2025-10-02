@@ -2,13 +2,13 @@ import { useState, useCallback } from "react"
 import { motion } from "framer-motion"
 import { Button } from "./ui/button"
 import { Card, CardContent } from "./ui/card"
-import { FileText, Briefcase, Upload, Sparkles, Brain } from "lucide-react"
+import { FileText, Briefcase, Upload, Sparkles, Brain, Type, File } from "lucide-react"
 import { simulateFileUpload } from "../lib/utils"
 
 interface HeroUploadProps {
   onCVUpload: (content: string) => void
   onJobDescriptionUpload: (content: string) => void
-  onAdaptCV: (resumeFile: File, jobFile: File) => void
+  onAdaptCV: (resumeFile: File, jobDescription: File | string) => void
   isLoading: boolean
 }
 
@@ -18,6 +18,7 @@ export function HeroUpload({ onCVUpload, onJobDescriptionUpload, onAdaptCV, isLo
   const [cvContent, setCvContent] = useState<string>("")
   const [jdContent, setJdContent] = useState<string>("")
   const [isUploading, setIsUploading] = useState(false)
+  const [jdInputMode, setJdInputMode] = useState<'text' | 'file'>('text')
 
   const handleFileUpload = useCallback(async (file: File, type: 'cv' | 'jd') => {
     if (!file) return
@@ -61,6 +62,11 @@ export function HeroUpload({ onCVUpload, onJobDescriptionUpload, onAdaptCV, isLo
     e.preventDefault()
   }, [])
 
+  const handleTextInputChange = useCallback((text: string) => {
+    setJdContent(text)
+    onJobDescriptionUpload(text)
+  }, [onJobDescriptionUpload])
+
   const canAdapt = cvContent && jdContent && !isLoading && !isUploading
 
   return (
@@ -72,7 +78,7 @@ export function HeroUpload({ onCVUpload, onJobDescriptionUpload, onAdaptCV, isLo
       <div className="absolute top-1/2 left-0 w-64 h-64 bg-success/5 rounded-full blur-3xl" />
       <div className="absolute bottom-1/2 right-0 w-64 h-64 bg-warning/5 rounded-full blur-3xl" />
       
-      <div className="container mx-auto max-w-6xl relative z-10">
+      <div className="container mx-auto max-w-7xl relative z-10">
         <motion.div 
           className="text-center mb-16"
           initial={{ y: 50, opacity: 0 }}
@@ -117,6 +123,7 @@ export function HeroUpload({ onCVUpload, onJobDescriptionUpload, onAdaptCV, isLo
             Upload your CV and job description. Our AI will analyze compatibility and generate an optimized CV to maximize your chances.
           </p>
         </motion.div>
+
 
         <motion.div 
           className="grid md:grid-cols-2 gap-8 mb-12"
@@ -203,82 +210,135 @@ export function HeroUpload({ onCVUpload, onJobDescriptionUpload, onAdaptCV, isLo
             </CardContent>
           </Card>
 
-          {/* Job Description Upload */}
+          {/* Job Description Input */}
           <Card className="relative overflow-hidden bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl hover:shadow-accent/20 transition-all duration-300">
             <CardContent className="p-8">
-              <div className="flex items-center mb-6">
-                <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mr-3">
-                  <Briefcase className="h-6 w-6 text-accent" />
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center">
+                  <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mr-3">
+                    <Briefcase className="h-6 w-6 text-accent" />
+                  </div>
+                  <h3 className="text-heading-3 font-optimized text-neutral-text-primary">Job Description</h3>
                 </div>
-                <h3 className="text-heading-3 font-optimized text-neutral-text-primary">Job Description</h3>
+                
+                {/* Input Mode Toggle */}
+                <div className="flex bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+                  <button
+                    onClick={() => {
+                      setJdInputMode('text')
+                      setJdFile(null)
+                      setJdContent("")
+                      onJobDescriptionUpload("")
+                    }}
+                    className={`flex items-center px-3 py-1 rounded-md text-sm font-medium transition-all duration-200 focus:outline-none ${
+                      jdInputMode === 'text'
+                        ? 'bg-white dark:bg-gray-700 text-accent shadow-sm'
+                        : 'text-gray-600 dark:text-gray-400 hover:text-accent'
+                    }`}
+                  >
+                    <Type className="w-4 h-4 mr-1" />
+                    Text
+                  </button>
+                  <button
+                    onClick={() => {
+                      setJdInputMode('file')
+                      setJdContent("")
+                      onJobDescriptionUpload("")
+                    }}
+                    className={`flex items-center px-3 py-1 rounded-md text-sm font-medium transition-all duration-200 focus:outline-none ${
+                      jdInputMode === 'file'
+                        ? 'bg-white dark:bg-gray-700 text-accent shadow-sm'
+                        : 'text-gray-600 dark:text-gray-400 hover:text-accent'
+                    }`}
+                  >
+                    <File className="w-4 h-4 mr-1" />
+                    File
+                  </button>
+                </div>
               </div>
               
-              <div
-                className={`border-2 border-dashed rounded-2xl p-8 text-center transition-all backdrop-blur-sm ${
-                  jdFile ? 'border-accent bg-accent/10 shadow-lg shadow-accent/20' : 'border-gray-400/70 hover:border-accent/50 hover:bg-gray-50/50'
-                }`}
-                onDrop={(e) => handleDrop(e, 'jd')}
-                onDragOver={handleDragOver}
-              >
-                {jdFile ? (
-                  <div className="space-y-4">
-                    <Briefcase className="h-12 w-12 text-accent mx-auto" />
-                    <div>
-                      <p className="text-neutral-text-primary font-medium">{jdFile.name}</p>
-                      <p className="text-sm text-neutral-text-secondary">
-                        {(jdFile.size / 1024 / 1024).toFixed(2)} MB
-                      </p>
-                    </div>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      className="bg-surface/80 backdrop-blur-sm border border-border hover:bg-accent/10 hover:border-accent/50 transition-all duration-300 dark:bg-surface-alt/80 dark:border-border"
-                      onClick={() => {
-                        setJdFile(null)
-                        setJdContent("")
-                        onJobDescriptionUpload("")
-                      }}
-                    >
-                      Change file
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    <Upload className="h-12 w-12 text-neutral-text-secondary mx-auto" />
-                    <div>
-                      <p className="text-neutral-text-primary font-medium mb-2">
-                        Drag and drop job description here
-                      </p>
-                      <p className="text-sm text-neutral-text-secondary mb-4">
-                        or click to select a file
-                      </p>
-                      <p className="text-xs text-neutral-text-secondary">
-                        Accepted formats: PDF, DOCX, TXT
-                      </p>
-                    </div>
-                    <input
-                      type="file"
-                      accept=".pdf,.docx,.doc,.txt"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0]
-                        if (file) handleFileUpload(file, 'jd')
-                      }}
-                      className="hidden"
-                      id="jd-upload"
-                    />
-                    <label htmlFor="jd-upload">
+              {jdInputMode === 'text' ? (
+                /* Text Input Mode */
+                <div className="space-y-4">
+                  <textarea
+                    value={jdContent}
+                    onChange={(e) => handleTextInputChange(e.target.value)}
+                    placeholder="Paste or type the job description here..."
+                    className="w-full h-48 p-4 border border-gray-300 dark:border-gray-600 rounded-xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm text-neutral-text-primary placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent resize-none"
+                  />
+                  <p className="text-xs text-neutral-text-secondary">
+                    Character count: {jdContent.length}
+                  </p>
+                </div>
+              ) : (
+                /* File Upload Mode */
+                <div
+                  className={`border-2 border-dashed rounded-2xl p-8 text-center transition-all backdrop-blur-sm ${
+                    jdFile ? 'border-accent bg-accent/10 shadow-lg shadow-accent/20' : 'border-gray-400/70 hover:border-accent/50 hover:bg-gray-50/50'
+                  }`}
+                  onDrop={(e) => handleDrop(e, 'jd')}
+                  onDragOver={handleDragOver}
+                >
+                  {jdFile ? (
+                    <div className="space-y-4">
+                      <Briefcase className="h-12 w-12 text-accent mx-auto" />
+                      <div>
+                        <p className="text-neutral-text-primary font-medium">{jdFile.name}</p>
+                        <p className="text-sm text-neutral-text-secondary">
+                          {(jdFile.size / 1024 / 1024).toFixed(2)} MB
+                        </p>
+                      </div>
                       <Button 
                         variant="outline" 
-                        size="sm" 
+                        size="sm"
                         className="bg-surface/80 backdrop-blur-sm border border-border hover:bg-accent/10 hover:border-accent/50 transition-all duration-300 dark:bg-surface-alt/80 dark:border-border"
-                        asChild
+                        onClick={() => {
+                          setJdFile(null)
+                          setJdContent("")
+                          onJobDescriptionUpload("")
+                        }}
                       >
-                        <span className="mt-4 cursor-pointer">Choose file</span>
+                        Change file
                       </Button>
-                    </label>
-                  </div>
-                )}
-              </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      <Upload className="h-12 w-12 text-neutral-text-secondary mx-auto" />
+                      <div>
+                        <p className="text-neutral-text-primary font-medium mb-2">
+                          Drag and drop job description here
+                        </p>
+                        <p className="text-sm text-neutral-text-secondary mb-4">
+                          or click to select a file
+                        </p>
+                        <p className="text-xs text-neutral-text-secondary">
+                          Accepted formats: PDF, DOCX, TXT
+                        </p>
+                      </div>
+                      <input
+                        type="file"
+                        accept=".pdf,.docx,.doc,.txt"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0]
+                          if (file) handleFileUpload(file, 'jd')
+                        }}
+                        className="hidden"
+                        id="jd-upload"
+                      />
+                      <label htmlFor="jd-upload">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="bg-surface/80 backdrop-blur-sm border border-border hover:bg-accent/10 hover:border-accent/50 transition-all duration-300 dark:bg-surface-alt/80 dark:border-border"
+                          asChild
+                        >
+                          <span className="mt-4 cursor-pointer">Choose file</span>
+                        </Button>
+                      </label>
+                    </div>
+                  )}
+                </div>
+              )}
             </CardContent>
           </Card>
         </motion.div>
@@ -297,8 +357,10 @@ export function HeroUpload({ onCVUpload, onJobDescriptionUpload, onAdaptCV, isLo
               size="lg" 
               className="text-lg px-12 py-6 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-xl hover:shadow-2xl hover:shadow-primary/25 transition-all duration-300 transform hover:scale-105"
               onClick={() => {
-                if (cvFile && jdFile) {
-                  onAdaptCV(cvFile, jdFile)
+                if (cvFile && (jdFile || jdContent)) {
+                  // Pass file if in file mode, or string if in text mode
+                  const jobDescription = jdInputMode === 'file' ? jdFile! : jdContent
+                  onAdaptCV(cvFile, jobDescription)
                 }
               }}
               disabled={!canAdapt}

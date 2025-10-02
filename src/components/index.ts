@@ -1,5 +1,4 @@
 // Export all components
-export { Dashboard } from './Dashboard'
 export { CVUploadBlock } from './CVUploadBlock'
 export { AutoApplyPreferences } from './AutoApplyPreferences'
 export { ConnectionsConsent } from './ConnectionsConsent'
@@ -10,3 +9,4 @@ export { AutoApplySection } from './AutoApplySection'
 export { ResultPanel } from './ResultPanel'
 export { PricingPlans } from './PricingPlans'
 export { Footer } from './Footer'
+export { CompanyCarousel } from './CompanyCarousel'

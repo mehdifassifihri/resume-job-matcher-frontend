@@ -17,11 +17,14 @@ import {
   ExternalLink,
   Settings,
   Bot,
-  Lock
+  Lock,
+  Camera,
+  User
 } from "lucide-react"
 // Import des logos depuis les assets
 import indeedLogo from "../assets/indeed.png"
 import linkedinLogo from "../assets/linkedin.png"
+import { PhotoUpload } from "./PhotoUpload"
 
 interface ConnectionsConsentProps {}
 
@@ -35,6 +38,7 @@ export function ConnectionsConsent(_props: ConnectionsConsentProps) {
 
   const [consentGiven, setConsentGiven] = useState(false)
   const [showApiKeys, setShowApiKeys] = useState<Record<string, boolean>>({})
+  const [profilePhoto, setProfilePhoto] = useState<File | null>(null)
 
   const jobBoards = [
     {
@@ -381,6 +385,31 @@ export function ConnectionsConsent(_props: ConnectionsConsentProps) {
             })}
           </div>
         </div>
+
+      {/* Profile Photo Section */}
+      <div className="relative">
+        <div className="flex items-center gap-4 mb-8">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-lg">
+            <Camera className="w-7 h-7 text-white" />
+          </div>
+          <div>
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
+              Profile Photo
+            </h3>
+            <p className="text-slate-600 dark:text-slate-400 text-lg">
+              Add a professional photo to your CV for better job matching
+            </p>
+          </div>
+        </div>
+
+        <div className="flex justify-center">
+          <PhotoUpload 
+            onPhotoChange={setProfilePhoto}
+            currentPhoto={profilePhoto}
+            className="max-w-sm"
+          />
+        </div>
+      </div>
 
       {/* Security & Consent */}
       <Card className="p-6 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">

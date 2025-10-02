@@ -1,7 +1,9 @@
-import { Check, Star, Sparkles } from "lucide-react"
+import { Check, Star, Sparkles, Loader2 } from "lucide-react"
 import { Badge } from "./ui/badge"
 import { Button } from "./ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/card"
+import { redirectToCheckout, STRIPE_PRICE_IDS } from "../lib/stripe"
+import { useState } from "react"
 
 interface PricingPlan {
   name: string
@@ -11,6 +13,7 @@ interface PricingPlan {
   popular?: boolean
   buttonText: string
   buttonVariant?: "default" | "outline"
+  priceId?: string
 }
 
 const plans: PricingPlan[] = [
@@ -25,7 +28,8 @@ const plans: PricingPlan[] = [
       "Community support"
     ],
     buttonText: "Start free",
-    buttonVariant: "outline"
+    buttonVariant: "outline",
+    priceId: undefined
   },
   {
     name: "Pro",
@@ -41,11 +45,38 @@ const plans: PricingPlan[] = [
     ],
     popular: true,
     buttonText: "Choose Pro",
-    buttonVariant: "default"
+    buttonVariant: "default",
+    priceId: STRIPE_PRICE_IDS.PRO
   }
 ]
 
 export function PricingPlans() {
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null)
+
+  const handlePlanClick = async (plan: PricingPlan) => {
+    try {
+      setLoadingPlan(plan.name)
+      
+      if (plan.name === "Free") {
+        // For free plan, just show success message
+        alert(`${plan.name} plan selected! You can start using our service right away.`)
+        return
+      }
+
+      // For paid plans, redirect to Stripe Checkout
+      if (plan.priceId) {
+        await redirectToCheckout(plan.priceId, plan.name)
+      } else {
+        throw new Error('Price ID not found for this plan')
+      }
+    } catch (error) {
+      console.error('Error processing plan selection:', error)
+      alert('Une erreur est survenue lors du traitement de votre demande. Veuillez réessayer.')
+    } finally {
+      setLoadingPlan(null)
+    }
+  }
+
   return (
     <section data-section="pricing" data-pricing-section className="relative py-24 overflow-hidden">
       {/* Background with blur effects */}
@@ -129,8 +160,17 @@ export function PricingPlans() {
                   variant={plan.buttonVariant} 
                   size="lg" 
                   className="w-full font-poppins-medium"
+                  onClick={() => handlePlanClick(plan)}
+                  disabled={loadingPlan === plan.name}
                 >
-                  {plan.buttonText}
+                  {loadingPlan === plan.name ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Processing...
+                    </>
+                  ) : (
+                    plan.buttonText
+                  )}
                 </Button>
               </CardFooter>
             </Card>

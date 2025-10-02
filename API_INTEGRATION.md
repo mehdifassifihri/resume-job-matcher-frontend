@@ -64,7 +64,15 @@ Si aucune variable d'environnement n'est définie, l'application utilise les val
     "summary": "...",
     "experience": [...],
     "education": [...],
-    "skills": { "technical": [...], "soft": [...], "languages": [...] },
+    "skills": { 
+      "programming_languages": ["Python", "JavaScript", "Java", "C++"], 
+      "tools": ["Git", "Docker", "AWS", "VS Code"], 
+      "libraries": ["React", "Django", "TensorFlow", "PyTorch"], 
+      "databases": ["MySQL", "PostgreSQL", "MongoDB"],
+      "cloud_platforms": ["AWS", "Google Cloud"],
+      "methodologies": ["Agile", "Scrum"],
+      "other": ["API Development", "Machine Learning", "Cloud Computing"] 
+    },
     "certifications": [...],
     "projects": [...],
     "achievements": []
@@ -74,6 +82,8 @@ Si aucune variable d'environnement n'est définie, l'application utilise les val
   "meta": { "detected_language": "ca" }
 }
 ```
+
+**Note**: The frontend automatically handles skills data from both the new structure (`programming_languages`, `tools`, `libraries`, `databases`, `cloud_platforms`, `methodologies`, `other`) and legacy structures (`technical`, `soft`, `languages`) for backward compatibility. Empty sections are automatically excluded from the resume preview.
 
 ### 2. Health Check
 

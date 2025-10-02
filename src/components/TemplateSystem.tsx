@@ -31,9 +31,13 @@ interface StructuredResume {
     end_date: string
   }>
   skills: {
-    technical: string[]
-    soft: string[]
-    languages: string[]
+    programming_languages?: string[]
+    tools?: string[]
+    libraries?: string[]
+    databases?: string[]
+    cloud_platforms?: string[]
+    methodologies?: string[]
+    other?: string[]
   }
   certifications: Array<{
     name: string
@@ -117,8 +121,28 @@ export function TemplateSystem({ structuredResume, onBack }: TemplateSystemProps
   ]
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-br from-neutral-surface via-neutral-surface-alt to-neutral-surface">
-      <div className="container mx-auto px-4 py-8">
+    <div className="w-full min-h-screen relative overflow-hidden">
+      {/* Animated Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-blue-900 dark:to-purple-900">
+        {/* Floating geometric shapes */}
+        <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-full blur-xl animate-pulse"></div>
+        <div className="absolute top-40 right-20 w-24 h-24 bg-gradient-to-r from-pink-400/20 to-orange-400/20 rounded-full blur-lg animate-bounce"></div>
+        <div className="absolute bottom-32 left-1/4 w-40 h-40 bg-gradient-to-r from-green-400/20 to-blue-400/20 rounded-full blur-2xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-1/3 w-28 h-28 bg-gradient-to-r from-purple-400/20 to-pink-400/20 rounded-full blur-xl animate-bounce"></div>
+        
+        {/* Grid pattern overlay */}
+        <div className="absolute inset-0 opacity-40">
+          <div className="w-full h-full" style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            backgroundRepeat: 'repeat'
+          }}></div>
+        </div>
+        
+        {/* Gradient overlay for depth */}
+        <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-white/60 dark:from-gray-900/80 dark:via-transparent dark:to-gray-900/60"></div>
+      </div>
+      
+      <div className="relative z-10 container mx-auto px-4 py-8">
         {/* Progress Steps */}
         <div className="mb-8">
           <div className="flex items-center justify-center space-x-4">
@@ -261,7 +285,7 @@ export function TemplateSystem({ structuredResume, onBack }: TemplateSystemProps
             transition={{ delay: 0.2 }}
             className="mt-6"
           >
-            <Card className="bg-primary/5 border-primary/20">
+            <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-xl border-primary/20">
               <CardContent className="pt-6">
                 <div className="flex items-center space-x-3">
                   <div className="w-12 h-12 rounded-lg overflow-hidden bg-white border-2 border-primary/20 flex items-center justify-center">

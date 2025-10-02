@@ -87,10 +87,10 @@ export function TemplateSelector({ onTemplateSelect, selectedTemplate }: Templat
             transition={{ duration: 0.5 }}
           >
             <Card 
-              className={`relative cursor-pointer transition-all duration-300 hover:shadow-xl ${
+              className={`relative cursor-pointer transition-all duration-300 hover:shadow-2xl backdrop-blur-sm bg-white/80 dark:bg-gray-800/80 border-0 shadow-lg ${
                 selectedTemplate?.id === template.id 
-                  ? 'ring-2 ring-primary border-primary shadow-lg' 
-                  : 'hover:shadow-lg'
+                  ? 'ring-2 ring-primary border-primary shadow-2xl bg-white/90 dark:bg-gray-800/90' 
+                  : 'hover:shadow-xl hover:bg-white/90 dark:hover:bg-gray-800/90'
               }`}
               onClick={() => onTemplateSelect(template)}
             >

@@ -1,8 +1,10 @@
 import { Button } from "./ui/button"
 import { ThemeToggle } from "./ui/theme-toggle"
 import { motion, AnimatePresence } from "framer-motion"
-import { Menu, X, Home, Info, DollarSign, LayoutDashboard, Sparkles } from "lucide-react"
+import { Menu, X, Home, Info, DollarSign, Sparkles, LogIn, LogOut, Zap } from "lucide-react"
 import { useState, useEffect } from "react"
+import { useAuth } from "../contexts/AuthContext"
+import { useNavigate } from "react-router-dom"
 
 interface HeaderProps {
   onNavigate?: (sectionId: string) => void
@@ -11,11 +13,13 @@ interface HeaderProps {
 export function Header({ onNavigate }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('home')
+  const { isAuthenticated, logout } = useAuth()
+  const navigate = useNavigate()
 
   // Detect active section on scroll
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ['home', 'how-it-works', 'pricing']
+      const sections = isAuthenticated ? ['home', 'dashboard'] : ['home', 'how-it-works', 'pricing']
       const scrollPosition = window.scrollY + 100
 
       for (const section of sections) {
@@ -32,9 +36,15 @@ export function Header({ onNavigate }: HeaderProps) {
 
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [isAuthenticated])
 
   const scrollToSection = (sectionId: string) => {
+    if (sectionId === 'dashboard') {
+      navigate('/saas-dashboard')
+      setIsMenuOpen(false)
+      return
+    }
+    
     if (onNavigate) {
       onNavigate(sectionId)
     } else {
@@ -46,10 +56,23 @@ export function Header({ onNavigate }: HeaderProps) {
     setIsMenuOpen(false)
   }
 
+  const handleLogout = async () => {
+    try {
+      await logout()
+      navigate('/')
+    } catch (error) {
+      console.error('Logout error:', error)
+    }
+  }
+
   const navigationItems = [
     { id: 'home', label: 'Home', icon: Home },
-    { id: 'how-it-works', label: 'How it works', icon: Info },
-    { id: 'pricing', label: 'Pricing', icon: DollarSign },
+    ...(isAuthenticated ? [
+      { id: 'dashboard', label: 'Auto Apply', icon: Zap },
+    ] : [
+      { id: 'how-it-works', label: 'How it works', icon: Info },
+      { id: 'pricing', label: 'Pricing', icon: DollarSign },
+    ])
   ]
 
   return (
@@ -65,7 +88,7 @@ export function Header({ onNavigate }: HeaderProps) {
           className="flex items-center space-x-3 cursor-pointer group"
           whileHover={{ scale: 1.02 }}
           transition={{ type: "spring", stiffness: 400, damping: 10 }}
-          onClick={() => scrollToSection('home')}
+          onClick={() => navigate('/')}
         >
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
             <Sparkles className="w-5 h-5 text-white" />
@@ -104,20 +127,30 @@ export function Header({ onNavigate }: HeaderProps) {
               </motion.div>
             )
           })}
+          
         </nav>
 
         {/* Actions Desktop */}
         <div className="hidden md:flex items-center space-x-3">
-          {/* Dashboard button - Hidden for now but keeping code */}
-          {false && (
+          {isAuthenticated ? (
             <Button
               variant="outline"
               size="sm"
-              onClick={() => scrollToSection('dashboard')}
+              onClick={handleLogout}
+              className="flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-red-500/10 text-red-500 hover:text-red-600 border-red-500/20"
+            >
+              <LogOut className="h-4 w-4" />
+              <span className="font-medium">Déconnexion</span>
+            </Button>
+          ) : (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate('/login')}
               className="flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-white/50 dark:hover:bg-neutral-surface-alt/50 text-neutral-text-primary hover:text-primary border-white/20 dark:border-[#0b1020]/50"
             >
-              <LayoutDashboard className="h-4 w-4" />
-              <span className="font-medium">Dashboard</span>
+              <LogIn className="h-4 w-4" />
+              <span className="font-medium">Connexion</span>
             </Button>
           )}
           <ThemeToggle />
@@ -125,16 +158,15 @@ export function Header({ onNavigate }: HeaderProps) {
 
         {/* Menu Mobile Button */}
         <div className="md:hidden flex items-center space-x-2">
-          {/* Dashboard button - Hidden for now but keeping code */}
-          {false && (
+          {!isAuthenticated && (
             <Button
               variant="outline"
               size="sm"
-              onClick={() => scrollToSection('dashboard')}
+              onClick={() => navigate('/login')}
               className="flex items-center space-x-1 px-3 py-2 rounded-lg transition-all duration-200 hover:bg-white/50 dark:hover:bg-neutral-surface-alt/50 text-neutral-text-primary hover:text-primary border-white/20 dark:border-[#0b1020]/50"
             >
-              <LayoutDashboard className="h-4 w-4" />
-              <span className="text-sm font-medium">Dashboard</span>
+              <LogIn className="h-4 w-4" />
+              <span className="text-sm font-medium">Connexion</span>
             </Button>
           )}
           <ThemeToggle />
@@ -185,8 +217,25 @@ export function Header({ onNavigate }: HeaderProps) {
                 )
               })}
               
-              {/* Dashboard Button in Mobile Menu - Hidden for now but keeping code */}
-              {false && (
+              {/* Auth Actions in Mobile Menu */}
+              {isAuthenticated ? (
+                <>
+                  <motion.div
+                    whileHover={{ x: 5 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Button 
+                      variant="outline"
+                      size="sm"
+                      onClick={handleLogout}
+                      className="w-full justify-start space-x-3 rounded-lg border-red-500/20 hover:bg-red-500/10 text-red-500"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      <span className="font-medium">Déconnexion</span>
+                    </Button>
+                  </motion.div>
+                </>
+              ) : (
                 <motion.div
                   whileHover={{ x: 5 }}
                   whileTap={{ scale: 0.95 }}
@@ -194,11 +243,11 @@ export function Header({ onNavigate }: HeaderProps) {
                   <Button 
                     variant="outline"
                     size="sm"
-                    onClick={() => scrollToSection('dashboard')}
+                    onClick={() => navigate('/login')}
                     className="w-full justify-start space-x-3 rounded-lg border-white/20 dark:border-[#0b1020]/50 hover:bg-white/50 dark:hover:bg-neutral-surface-alt/50"
                   >
-                    <LayoutDashboard className="h-4 w-4" />
-                    <span className="font-medium">Dashboard</span>
+                    <LogIn className="h-4 w-4" />
+                    <span className="font-medium">Connexion</span>
                   </Button>
                 </motion.div>
               )}

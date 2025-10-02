@@ -1,5 +1,6 @@
 // API service for resume matching
 import { config } from './config'
+import { authService } from './auth'
 
 export interface APIResponse {
   score: number
@@ -38,9 +39,13 @@ export interface APIResponse {
       end_date: string
     }>
     skills: {
-      technical: string[]
-      soft: string[]
-      languages: string[]
+      programming_languages?: string[]
+      tools?: string[]
+      libraries?: string[]
+      databases?: string[]
+      cloud_platforms?: string[]
+      methodologies?: string[]
+      other?: string[]
     }
     certifications: Array<{
       name: string
@@ -80,7 +85,8 @@ class APIService {
 
   private async makeRequest<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
+    requireAuth: boolean = false
   ): Promise<T> {
     const url = `${this.baseURL}${endpoint}`
     
@@ -88,14 +94,31 @@ class APIService {
     // Only set timeout if it's greater than 0
     const timeoutId = this.timeout > 0 ? setTimeout(() => controller.abort(), this.timeout) : null
 
+    // Prepare headers
+    const headers: Record<string, string> = {
+      'Accept': 'application/json',
+    }
+
+    // Add existing headers from options
+    if (options.headers) {
+      Object.entries(options.headers).forEach(([key, value]) => {
+        if (typeof value === 'string') {
+          headers[key] = value
+        }
+      })
+    }
+
+    // Add authorization header if required
+    if (requireAuth) {
+      const authHeaders = authService.getAuthHeaders()
+      Object.assign(headers, authHeaders)
+    }
+
     try {
       const response = await fetch(url, {
         ...options,
         signal: controller.signal,
-        headers: {
-          'Accept': 'application/json',
-          ...options.headers,
-        },
+        headers,
       })
 
       if (timeoutId) clearTimeout(timeoutId)
@@ -132,18 +155,60 @@ class APIService {
 
   async uploadResumeAndJob(
     resumeFile: File,
-    jobFile: File,
+    jobDescription: File | string,
     model: string = 'gpt-4o-mini'
   ): Promise<APIResponse> {
     const formData = new FormData()
     formData.append('resume_file', resumeFile)
-    formData.append('job_file', jobFile)
+    
+    // Handle job description as either file or string
+    if (typeof jobDescription === 'string') {
+      formData.append('job_description', jobDescription)
+    } else {
+      formData.append('job_file', jobDescription)
+    }
+    
     formData.append('model', model)
 
-    return this.makeRequest<APIResponse>(config.api.endpoints.upload, {
+    const response = await this.makeRequest<APIResponse>(config.api.endpoints.upload, {
       method: 'POST',
       body: formData,
-    })
+    }, true) // requireAuth = true
+
+    // Transform skills structure if needed (handle old API format)
+    if (response.structured_resume?.skills) {
+      response.structured_resume.skills = this.transformSkillsStructure(response.structured_resume.skills)
+    }
+
+    return response
+  }
+
+  private transformSkillsStructure(skills: any): any {
+    // If skills already has the new structure, return as is
+    if (skills.languages || skills.tools || skills.libraries || skills.other) {
+      return skills
+    }
+
+    // Transform from old structure to new structure
+    const transformed = {
+      languages: [] as string[],
+      tools: [] as string[],
+      libraries: [] as string[],
+      other: [] as string[]
+    }
+
+    // Map old structure to new structure
+    if (skills.technical && Array.isArray(skills.technical)) {
+      transformed.languages = [...transformed.languages, ...skills.technical]
+    }
+    if (skills.soft && Array.isArray(skills.soft)) {
+      transformed.other = [...transformed.other, ...skills.soft]
+    }
+    if (skills.languages && Array.isArray(skills.languages)) {
+      transformed.languages = [...transformed.languages, ...skills.languages]
+    }
+
+    return transformed
   }
 
   async healthCheck(): Promise<{ status: string; timestamp: string }> {
