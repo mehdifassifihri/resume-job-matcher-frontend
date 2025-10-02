@@ -132,7 +132,8 @@ export function Header({ onNavigate }: HeaderProps) {
 
         {/* Actions Desktop */}
         <div className="hidden md:flex items-center space-x-3">
-          {isAuthenticated ? (
+          {/* Connection buttons commented out */}
+          {/* {isAuthenticated ? (
             <Button
               variant="outline"
               size="sm"
@@ -152,13 +153,14 @@ export function Header({ onNavigate }: HeaderProps) {
               <LogIn className="h-4 w-4" />
               <span className="font-medium">Connexion</span>
             </Button>
-          )}
+          )} */}
           <ThemeToggle />
         </div>
 
         {/* Menu Mobile Button */}
         <div className="md:hidden flex items-center space-x-2">
-          {!isAuthenticated && (
+          {/* Mobile connection button commented out */}
+          {/* {!isAuthenticated && (
             <Button
               variant="outline"
               size="sm"
@@ -168,7 +170,7 @@ export function Header({ onNavigate }: HeaderProps) {
               <LogIn className="h-4 w-4" />
               <span className="text-sm font-medium">Connexion</span>
             </Button>
-          )}
+          )} */}
           <ThemeToggle />
           <motion.button
             whileHover={{ scale: 1.05 }}
@@ -217,8 +219,8 @@ export function Header({ onNavigate }: HeaderProps) {
                 )
               })}
               
-              {/* Auth Actions in Mobile Menu */}
-              {isAuthenticated ? (
+              {/* Auth Actions in Mobile Menu - Commented out */}
+              {/* {isAuthenticated ? (
                 <>
                   <motion.div
                     whileHover={{ x: 5 }}
@@ -250,7 +252,7 @@ export function Header({ onNavigate }: HeaderProps) {
                     <span className="font-medium">Connexion</span>
                   </Button>
                 </motion.div>
-              )}
+              )} */}
               
             </div>
           </motion.div>
