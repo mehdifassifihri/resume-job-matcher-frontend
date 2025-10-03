@@ -68,7 +68,7 @@ export function Header({ onNavigate }: HeaderProps) {
   const navigationItems = [
     { id: 'home', label: 'Home', icon: Home },
     ...(isAuthenticated ? [
-      // Auto Apply navigation removed
+      { id: 'dashboard', label: 'Auto Apply', icon: Zap },
     ] : [
       { id: 'how-it-works', label: 'How it works', icon: Info },
       { id: 'pricing', label: 'Pricing', icon: DollarSign },

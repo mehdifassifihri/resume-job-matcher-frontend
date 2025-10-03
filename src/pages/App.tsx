@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import { Header } from "../components/Header"
 import { HeroUpload } from "../components/HeroUpload"
 import { HowItWorks } from "../components/HowItWorks"
+import { AutoApplySection } from "../components/AutoApplySection"
 import { ResultPanel } from "../components/ResultPanel"
 import { PricingPlans } from "../components/PricingPlans"
 import { Footer } from "../components/Footer"
@@ -137,6 +138,7 @@ function LandingPageContent() {
             <>
               <HowItWorks />
               <CompanyCarousel />
+              <AutoApplySection />
             </>
           )}
           
