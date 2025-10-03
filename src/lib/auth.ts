@@ -28,7 +28,7 @@ export interface User {
 }
 
 class AuthService {
-  private baseURL = 'http://localhost:8000';
+  private baseURL = 'https://web-production-fb736.up.railway.app';
   private accessTokenKey = 'access_token';
   private refreshTokenKey = 'refresh_token';
 
