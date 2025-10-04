@@ -652,11 +652,12 @@ export function CVGenerator({ structuredResume, templateId }: CVGeneratorProps) 
       experience: (items: any[]) => items.map(exp => {
         // Handle both date formats: separate start_date/end_date or single dates field
         const dateString = exp.dates || `${exp.start_date || ''} - ${exp.end_date || ''}`.replace(/ - $/, '')
+        const achievements = Array.isArray(exp.achievements) ? exp.achievements : []
         return `<div class="item">
           <div class="item-header">${exp.title}</div>
           <div class="item-subheader">${exp.company} • ${dateString}</div>
           <ul class="bullets">
-            ${exp.achievements.map((achievement: string) => `<li>${achievement}</li>`).join('')}
+            ${achievements.map((achievement: string) => `<li>${achievement}</li>`).join('')}
           </ul>
         </div>`
       }).join(''),
@@ -758,13 +759,14 @@ export function CVGenerator({ structuredResume, templateId }: CVGeneratorProps) 
       experience: (items: any[]) => items.map(exp => {
         // Handle both date formats: separate start_date/end_date or single dates field
         const dateString = exp.dates || `${exp.start_date || ''}–${exp.end_date || ''}`.replace(/–$/, '')
+        const achievements = Array.isArray(exp.achievements) ? exp.achievements : []
         return `<article class="item">
           <div class="role-line">
             <span class="role">${exp.title}</span>
             <span class="org">at <i>${exp.company}</i>.</span>
             <span class="dates">${dateString}</span>
           </div>
-          ${exp.achievements.map((achievement: string) => `<p class="bullet-mini diamond">${achievement}</p>`).join('')}
+          ${achievements.map((achievement: string) => `<p class="bullet-mini diamond">${achievement}</p>`).join('')}
         </article>`
       }).join(''),
       
