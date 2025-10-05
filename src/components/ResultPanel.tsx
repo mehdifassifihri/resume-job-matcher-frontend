@@ -27,6 +27,12 @@ export function ResultPanel({ score, coverage, recommendations, adaptedCV, isVis
   const [downloadType, setDownloadType] = useState<'docx' | 'pdf'>('docx')
   const [showTemplateSystem, setShowTemplateSystem] = useState(false)
 
+  // Debug structuredResume data
+  console.log('=== RESULT PANEL DEBUG ===')
+  console.log('structuredResume received:', structuredResume)
+  console.log('apiResponse:', apiResponse)
+  console.log('apiResponse?.structured_resume:', apiResponse?.structured_resume)
+
   const handleCopy = async () => {
     const success = await copyToClipboard(adaptedCV)
     if (success) {

@@ -936,6 +936,12 @@ export function CVGenerator({ structuredResume, templateId }: CVGeneratorProps) 
     console.log('Phone:', debugField('phone'))
     console.log('Location:', debugField('location'))
     
+    // Additional debug for name specifically
+    console.log('=== NAME DEBUG ===')
+    console.log('structuredResume.contact_info:', structuredResume.contact_info)
+    console.log('structuredResume.contact_info?.name:', structuredResume.contact_info?.name)
+    console.log('Final name value that will be used:', name)
+    
     cv = cv.replace(/{{NAME}}/g, name)
     cv = cv.replace(/{{EMAIL}}/g, email)
     cv = cv.replace(/{{PHONE}}/g, phone)
