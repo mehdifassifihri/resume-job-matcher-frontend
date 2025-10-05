@@ -451,10 +451,6 @@ const FAANG_TEMPLATE = `<!DOCTYPE html>
       </div>
       <div class="address-line">
         <a href="mailto:{{EMAIL}}">{{EMAIL}}</a>
-        <span class="sep"></span>
-        <a href="{{LINKEDIN}}">{{LINKEDIN}}</a>
-        <span class="sep"></span>
-        <a href="{{WEBSITE}}">{{WEBSITE}}</a>
       </div>
     </div>
     
