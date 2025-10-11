@@ -38,22 +38,6 @@ const templates: Template[] = [
     ],
     logo: faangLogo,
     isPopular: true
-  },
-  {
-    id: 'modern-professional',
-    name: 'Modern Professional',
-    description: 'Elegant two-column layout with blue sidebar. Perfect for experienced professionals seeking a sophisticated, modern appearance.',
-    category: 'Professional',
-    difficulty: 'Intermediate',
-    features: [
-      'Two-column layout',
-      'Blue sidebar design',
-      'Professional typography',
-      'Contact details sidebar',
-      'Skills and profile section',
-      'Responsive design'
-    ],
-    isPopular: false
   }
 ]
 

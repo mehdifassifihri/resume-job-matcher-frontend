@@ -1,146 +1,93 @@
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { authService, User, LoginCredentials, RegisterCredentials, AuthTokens } from '../lib/auth';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { authService, User } from '../lib/auth'
 
 interface AuthContextType {
-  user: User | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  login: (credentials: LoginCredentials) => Promise<void>;
-  register: (credentials: RegisterCredentials) => Promise<void>;
-  logout: () => Promise<void>;
-  refreshUser: () => Promise<void>;
+  user: User | null
+  isAuthenticated: boolean
+  isLoading: boolean
+  login: (email: string, password: string) => Promise<void>
+  register: (email: string, username: string, password: string, fullName?: string) => Promise<void>
+  logout: () => void
+  refreshUser: () => Promise<void>
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType | undefined>(undefined)
+
+export const useAuth = () => {
+  const context = useContext(AuthContext)
+  if (!context) {
+    // Return default values instead of throwing error
+    // This allows components to gracefully handle missing auth
+    return {
+      user: null,
+      isAuthenticated: false,
+      isLoading: false,
+      login: async () => {},
+      register: async () => {},
+      logout: () => {},
+      refreshUser: async () => {},
+    }
+  }
+  return context
+}
 
 interface AuthProviderProps {
-  children: ReactNode;
+  children: ReactNode
 }
 
-export function AuthProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const [user, setUser] = useState<User | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
-  const isAuthenticated = !!user;
-
-  // Charger l'utilisateur au démarrage
+  // Load user on mount
   useEffect(() => {
-    const loadUser = async () => {
-      try {
-        if (authService.isAuthenticated()) {
-          const userData = await authService.getCurrentUser();
-          setUser(userData);
-        }
-      } catch (error) {
-        console.error('Error loading user:', error);
-      } finally {
-        setIsLoading(false);
+    loadUser()
+  }, [])
+
+  const loadUser = async () => {
+    try {
+      if (authService.isAuthenticated()) {
+        const userData = await authService.getCurrentUser()
+        setUser(userData)
       }
-    };
-
-    loadUser();
-  }, []);
-
-  // Fonction d'inscription
-  const register = async (credentials: RegisterCredentials): Promise<void> => {
-    try {
-      setIsLoading(true);
-      const newUser = await authService.register(credentials);
-      
-      // Après l'inscription, connecter automatiquement l'utilisateur
-      const tokens = await authService.login({
-        email: credentials.email,
-        password: credentials.password
-      });
-      
-      // Charger les informations utilisateur
-      const userData = await authService.getCurrentUser();
-      setUser(userData);
     } catch (error) {
-      console.error('Register error:', error);
-      throw error;
+      console.error('Failed to load user:', error)
+      authService.logout()
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
-  // Fonction de connexion
-  const login = async (credentials: LoginCredentials): Promise<void> => {
-    try {
-      setIsLoading(true);
-      const tokens = await authService.login(credentials);
-      
-      // Charger les informations utilisateur après la connexion
-      const userData = await authService.getCurrentUser();
-      setUser(userData);
-    } catch (error) {
-      console.error('Login error:', error);
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const login = async (email: string, password: string) => {
+    await authService.login({ email, password })
+    await loadUser()
+  }
 
-  // Fonction de déconnexion
-  const logout = async (): Promise<void> => {
-    try {
-      setIsLoading(true);
-      await authService.logout();
-      setUser(null);
-    } catch (error) {
-      console.error('Logout error:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const register = async (email: string, username: string, password: string, fullName?: string) => {
+    await authService.register({ email, username, password, full_name: fullName })
+    // Auto-login after registration
+    await login(email, password)
+  }
 
-  // Rafraîchir les informations utilisateur
-  const refreshUser = async (): Promise<void> => {
-    try {
-      const userData = await authService.getCurrentUser();
-      setUser(userData);
-    } catch (error) {
-      console.error('Error refreshing user:', error);
-      setUser(null);
-    }
-  };
+  const logout = () => {
+    authService.logout()
+    setUser(null)
+  }
+
+  const refreshUser = async () => {
+    await loadUser()
+  }
 
   const value: AuthContextType = {
     user,
-    isAuthenticated,
+    isAuthenticated: !!user,
     isLoading,
     login,
     register,
     logout,
     refreshUser,
-  };
-
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
-}
-
-// Hook personnalisé pour utiliser le contexte d'authentification
-export function useAuth(): AuthContextType {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
   }
-  return context;
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
-// Hook pour vérifier si l'utilisateur est connecté
-export function useRequireAuth(): AuthContextType {
-  const auth = useAuth();
-  
-  useEffect(() => {
-    if (!auth.isLoading && !auth.isAuthenticated) {
-      // Rediriger vers la page de connexion si non authentifié
-      window.location.href = '/login';
-    }
-  }, [auth.isAuthenticated, auth.isLoading]);
-
-  return auth;
-}

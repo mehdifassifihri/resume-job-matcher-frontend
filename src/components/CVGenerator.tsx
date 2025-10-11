@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 import { Button } from './ui/button'
 import { Badge } from './ui/badge'
 import { motion } from 'framer-motion'
-import { Download, Eye, FileDown } from 'lucide-react'
+import { Eye, FileDown } from 'lucide-react'
 import { useToast } from './ui/use-toast'
 
 interface StructuredResume {
@@ -80,225 +80,6 @@ interface CVGeneratorProps {
   structuredResume: StructuredResume
   templateId: string
 }
-
-// Modern Professional Template HTML
-const MODERN_PROFESSIONAL_TEMPLATE = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{{NAME}} — CV</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --cv-blue:#304263;
-      --cv-blue-90:#3b4c72;
-      --text:#111;
-      --rule:#000;
-      --link:#1a73e8;
-      --page-margin: 0.4in;
-      --name-size: 1.6rem;
-      --body-size: 11pt;
-      --tight: 1.25;
-    }
-
-    html,body{ height:100%; }
-    body{
-      margin:0;
-      color:var(--text);
-      font: 400 var(--body-size)/var(--tight) "Fira Sans", system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Arial, "Noto Sans", sans-serif;
-      background:#fff;
-    }
-
-    .page{
-      max-width: 1120px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 0.36fr 0.64fr;
-      column-gap: 2.5em;
-      padding: clamp(16px, 1.5vw, 24px);
-    }
-
-    .left{
-      display:flex;
-      flex-direction:column;
-    }
-    .left-top-band{ height:5mm; background:var(--cv-blue); }
-    .left-box{
-      background: linear-gradient(0deg, var(--cv-blue-90), var(--cv-blue-90));
-      color:#fff;
-      padding-left: 9%;
-      padding-right: 9%;
-      padding-top: 24px;
-      padding-bottom: 28px;
-      min-height: 293mm;
-    }
-
-    .name{
-      font-size: clamp(1.2rem, 2.2vw, var(--name-size));
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      font-weight: 700;
-      margin: 0 0 12px 0;
-    }
-    .name b{ font-weight:900; }
-
-    .avatar-wrap{ display:flex; justify-content:center; margin:10px 0 12px; }
-    .avatar{ width:65%; max-width: 220px; aspect-ratio:1/1; border-radius:50%; object-fit:cover; border:3px solid rgba(255,255,255,.35); background:#fff; }
-
-    .h-left{
-      margin-top: 18px;
-      margin-bottom: 6px;
-      font-weight:800;
-      text-transform: uppercase;
-      letter-spacing: .06em;
-      font-size: .92rem;
-      position: relative;
-    }
-    .h-left::after{
-      content: "";
-      display:block;
-      height:2px;
-      background:#fff;
-      opacity:.85;
-      margin-top:6px;
-    }
-
-    .left p{ margin: 8px 0; }
-
-    .contact{
-      font-size: .92rem;
-      line-height: 1.35;
-      word-break: break-word;
-    }
-
-    .list{
-      margin: 6px 0 0;
-      padding-left: 1.2em;
-    }
-    .list li{ margin: 3px 0; }
-
-    a{ color: var(--link); text-decoration: none; }
-    .left a{ color:#fff; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
-
-    .right{ padding-top: 18px; }
-
-    .h-right{
-      color: var(--cv-blue);
-      text-transform: uppercase;
-      letter-spacing: .06em;
-      font-weight: 800;
-      font-size: 1.25rem;
-      margin: 18px 0 8px;
-      position: relative;
-    }
-    .h-right::after{
-      content:"";
-      display:block;
-      height:2px; background: var(--cv-blue);
-      opacity:.9; margin-top:4px;
-    }
-
-    .item{ margin-top: 10px; }
-    .role-line{
-      display:flex; align-items: baseline; gap: 8px; flex-wrap: wrap;
-    }
-    .role{
-      font-variant-caps: small-caps;
-      font-weight: 700;
-    }
-    .org{ font-style: italic; }
-    .dates{ margin-left:auto; font-weight:700; white-space:nowrap; }
-
-    .bullet-mini{ font-size:.96rem; margin-top: 4px; color:#222; }
-    .diamond::before{ content:"◆\\00a0"; }
-
-    .compact p{ margin: 6px 0; }
-
-    @media print{
-      @page{ size:A4; margin: var(--page-margin); }
-      body{ -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      .page{ padding:0; }
-      a{ color:inherit; text-decoration: none; }
-    }
-
-    @media (max-width: 900px){
-      .page{ grid-template-columns: 1fr; }
-      .left-top-band{ display:none; }
-      .left-box{ min-height:auto; border-radius: 12px; }
-      .dates{ margin-left: 0; font-weight:600; }
-    }
-  </style>
-</head>
-<body>
-  <main class="page">
-    <section class="left">
-      <div class="left-top-band"></div>
-      <aside class="left-box">
-        <h1 class="name">{{NAME}}</h1>
-        <div class="avatar-wrap">
-          {{PHOTO_PLACEHOLDER}}
-        </div>
-
-        <h2 class="h-left">Profile</h2>
-        <p>{{SUMMARY}}</p>
-
-        <h2 class="h-left">Contact details</h2>
-        <div class="contact">
-          <div>✉︎ <a href="mailto:{{EMAIL}}">{{EMAIL}}</a></div>
-          <div>☎︎ {{PHONE}}</div>
-          <div>🌐 <a href="{{WEBSITE}}" target="_blank" rel="noreferrer">{{WEBSITE}}</a></div>
-          <div>📍 {{LOCATION}}</div>
-        </div>
-
-        <h2 class="h-left">Skills</h2>
-        <ul class="list">
-          {{SKILLS_ITEMS}}
-        </ul>
-      </aside>
-    </section>
-
-    <section class="right">
-      <h2 class="h-right">Experience</h2>
-      {{EXPERIENCE_ITEMS}}
-
-      <h2 class="h-right">Education</h2>
-      {{EDUCATION_ITEMS}}
-
-      <h2 class="h-right">Projects</h2>
-      {{PROJECTS_ITEMS}}
-
-      <h2 class="h-right">Certifications</h2>
-      {{CERTIFICATIONS_ITEMS}}
-
-      <h2 class="h-right">Achievements</h2>
-      {{ACHIEVEMENTS_ITEMS}}
-
-      <h2 class="h-right">Awards</h2>
-      {{AWARDS_ITEMS}}
-
-      <h2 class="h-right">Publications</h2>
-      {{PUBLICATIONS_ITEMS}}
-
-      <h2 class="h-right">Volunteer Work</h2>
-      {{VOLUNTEER_WORK_ITEMS}}
-
-      <h2 class="h-right">Interests</h2>
-      {{INTERESTS_ITEMS}}
-
-      <h2 class="h-right">References</h2>
-      {{REFERENCES_ITEMS}}
-
-      <h2 class="h-right">Languages</h2>
-      {{LANGUAGES_ITEMS}}
-
-      {{ADDITIONAL_SECTIONS}}
-    </section>
-  </main>
-</body>
-</html>`
 
 // FAANG Path Template HTML
 const FAANG_TEMPLATE = `<!DOCTYPE html>
@@ -417,6 +198,23 @@ const FAANG_TEMPLATE = `<!DOCTYPE html>
       position: absolute; 
       left: 0; 
       line-height: 1; 
+    }
+    
+    /* ========== Technology badges ========== */
+    .tech-container {
+      margin-top: 0.3rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.2rem;
+    }
+    .tech-badge {
+      background: #f0f0f0;
+      color: #333;
+      padding: 0.1rem 0.4rem;
+      border-radius: 0.2rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      border: 1px solid #ddd;
     }
     
     /* ========== Skills table ========== */
@@ -592,11 +390,8 @@ export function CVGenerator({ structuredResume, templateId }: CVGeneratorProps) 
 
   // Helper function to remove empty sections
   const removeSection = (cv: string, sectionTitle: string, placeholder: string) => {
-    // Remove sections with different possible patterns
+    // Remove sections with different possible patterns for FAANG template
     const patterns = [
-      // Modern Professional pattern
-      new RegExp(`<h2 class="h-right">${sectionTitle}</h2>[\\s\\S]*?${placeholder}`, 'g'),
-      new RegExp(`<h2 class="h-left">${sectionTitle}</h2>[\\s\\S]*?${placeholder}`, 'g'),
       // FAANG pattern
       new RegExp(`<h2 class="section-title">${sectionTitle}</h2>[\\s\\S]*?${placeholder}`, 'g'),
       // Section with wrapper
@@ -660,9 +455,10 @@ export function CVGenerator({ structuredResume, templateId }: CVGeneratorProps) 
       
       projects: (items: any[]) => items.map(project => {
         const technologies = Array.isArray(project.technologies_used) 
-          ? project.technologies_used.join(', ')
-          : String(project.technologies_used || '')
-        return `<li><strong>${project.name}:</strong> ${project.description} <em>(${technologies})</em></li>`
+          ? project.technologies_used
+          : (project.technologies_used ? [project.technologies_used] : [])
+        const techBadges = technologies.map((tech: string) => `<span class="tech-badge">${tech}</span>`).join(' ')
+        return `<li><strong>${project.name}:</strong> ${project.description}<br><div class="tech-container">${techBadges}</div></li>`
       }).join(''),
       
       certifications: (items: any[]) => items.map(cert => 
@@ -712,152 +508,6 @@ export function CVGenerator({ structuredResume, templateId }: CVGeneratorProps) 
           `
         }).join('')
       }
-    },
-    
-    'modern-professional': {
-      education: (items: any[]) => items.map(edu => {
-        // Handle both date formats: separate start_date/end_date or single dates field
-        const dateString = edu.dates || `${edu.start_date || ''}–${edu.end_date || ''}`.replace(/–$/, '')
-        return `<article class="item">
-          <div class="role-line">
-            <span class="role">${edu.degree}</span>
-            <span class="org">— <i>${edu.institution}</i>.</span>
-            <span class="dates">${dateString}</span>
-          </div>
-        </article>`
-      }).join(''),
-      
-      skills: (skills: any) => {
-        // Handle new structure: {programming_languages, tools, libraries, databases, cloud_platforms, methodologies, other}
-        const newStructureSkills = [
-          ...(skills.programming_languages || []),
-          ...(skills.tools || []),
-          ...(skills.libraries || []),
-          ...(skills.databases || []),
-          ...(skills.cloud_platforms || []),
-          ...(skills.methodologies || []),
-          ...(skills.other || [])
-        ]
-        
-        // Handle legacy structures for backward compatibility
-        const legacySkills = [
-          ...(skills.languages || []),
-          ...(skills.technical || []),
-          ...(skills.soft || [])
-        ]
-        
-        // Use whichever structure has data
-        const allSkills = newStructureSkills.length > 0 ? newStructureSkills : legacySkills
-        
-        return allSkills.map(skill => `<li>${skill}</li>`).join('')
-      },
-      
-      experience: (items: any[]) => items.map(exp => {
-        // Handle both date formats: separate start_date/end_date or single dates field
-        const dateString = exp.dates || `${exp.start_date || ''}–${exp.end_date || ''}`.replace(/–$/, '')
-        const achievements = Array.isArray(exp.achievements) ? exp.achievements : []
-        return `<article class="item">
-          <div class="role-line">
-            <span class="role">${exp.title}</span>
-            <span class="org">at <i>${exp.company}</i>.</span>
-            <span class="dates">${dateString}</span>
-          </div>
-          ${achievements.map((achievement: string) => `<p class="bullet-mini diamond">${achievement}</p>`).join('')}
-        </article>`
-      }).join(''),
-      
-      projects: (items: any[]) => items.map(project => {
-        const technologies = Array.isArray(project.technologies_used) 
-          ? project.technologies_used.join(', ')
-          : String(project.technologies_used || '')
-        return `<article class="item">
-          <div class="role-line">
-            <span class="role">${project.name}</span>
-            <span class="org">— <i>${technologies}</i></span>
-          </div>
-          <p class="bullet-mini diamond">${project.description}</p>
-        </article>`
-      }).join(''),
-      
-      certifications: (items: any[]) => items.map(cert => 
-        `<article class="item">
-          <div class="role-line">
-            <span class="role">${cert.name}</span>
-            <span class="org">— <i>${cert.issuer !== 'Unknown' ? cert.issuer : 'Certification'}</i></span>
-            <span class="dates">${cert.date !== 'Unknown' ? cert.date : ''}</span>
-          </div>
-        </article>`
-      ).join(''),
-      
-      achievements: (items: string[]) => items.map(achievement => `<li>${achievement}</li>`).join(''),
-      
-      awards: (items: any[]) => items.map(award => 
-        `<article class="item">
-          <p class="bullet-mini diamond">${award}</p>
-        </article>`
-      ).join(''),
-      
-      publications: (items: any[]) => items.map(pub => 
-        `<article class="item">
-          <div class="role-line">
-            <span class="role">${pub.title}</span>
-            <span class="org">— <i>${pub.journal || pub.venue || 'Publication'}</i></span>
-          </div>
-        </article>`
-      ).join(''),
-      
-      volunteer_work: (items: any[]) => items.map(work => 
-        `<article class="item">
-          <div class="role-line">
-            <span class="role">${work.organization || work.title}</span>
-            <span class="org">— <i>${work.description || work.role}</i></span>
-          </div>
-        </article>`
-      ).join(''),
-      
-      interests: (items: string[]) => items.map(interest => `<li>${interest}</li>`).join(''),
-      
-      references: (items: any[]) => items.map(ref => 
-        `<article class="item">
-          <div class="role-line">
-            <span class="role">${ref.name}</span>
-            <span class="org">— <i>${ref.position}, ${ref.company}</i></span>
-          </div>
-        </article>`
-      ).join(''),
-      
-      languages: (items: any[]) => items.map(lang => 
-        `<article class="item">
-          <div class="role-line">
-            <span class="role">${lang.name}</span>
-            <span class="org">— <i>${lang.proficiency || lang.level}</i></span>
-          </div>
-        </article>`
-      ).join(''),
-      
-      additional_sections: (sections: any) => {
-        return Object.entries(sections).map(([sectionName, items]: [string, any]) => {
-          const itemsHtml = Array.isArray(items) ? items.map((item: any) => {
-            if (typeof item === 'string') {
-              return `<article class="item"><p class="bullet-mini diamond">${item}</p></article>`
-            }
-            if (typeof item === 'object') {
-              const fields = Object.entries(item).map(([key, value]) => 
-                `<strong>${key}:</strong> ${value}`
-              ).join(', ')
-              return `<article class="item"><p class="bullet-mini diamond">${fields}</p></article>`
-            }
-            return `<article class="item"><p class="bullet-mini diamond">${item}</p></article>`
-          }).join('') : ''
-          
-          return `
-            <div class="section">
-              <h3>${sectionName}</h3>
-              ${itemsHtml}
-            </div>
-          `
-        }).join('')
-      }
     }
   }
 
@@ -883,8 +533,6 @@ export function CVGenerator({ structuredResume, templateId }: CVGeneratorProps) 
     
     if (templateId === 'faang-path') {
       cv = FAANG_TEMPLATE
-    } else if (templateId === 'modern-professional') {
-      cv = MODERN_PROFESSIONAL_TEMPLATE
     } else {
       return ''
     }
@@ -962,10 +610,7 @@ export function CVGenerator({ structuredResume, templateId }: CVGeneratorProps) 
       cv = cv.replace(/{{SUMMARY}}/g, structuredResume.summary)
     } else {
       console.log('Removing summary sections because no content')
-      // Remove profile section if no summary - use more precise removal
-      // For Modern Professional template (Profile section in left sidebar)
-      cv = cv.replace(/<h2 class="h-left">Profile<\/h2>\s*<p>{{SUMMARY}}<\/p>/g, '')
-      // For FAANG template (Summary section)
+      // Remove summary section if no summary (FAANG template)
       cv = cv.replace(/<section class="section" aria-label="Summary">[\s\S]*?<p>{{SUMMARY}}<\/p>[\s\S]*?<\/section>/g, '')
       // Remove any remaining SUMMARY placeholders
       cv = cv.replace(/{{SUMMARY}}/g, '')
@@ -1095,12 +740,12 @@ export function CVGenerator({ structuredResume, templateId }: CVGeneratorProps) 
                 CV Generator
               </CardTitle>
               <p className="text-neutral-text-secondary mt-2">
-                Generate your professional CV using the {templateId === 'faang-path' ? 'FAANG Path' : 'Modern Professional'} template
+                Generate your professional CV using the FAANG Path template
               </p>
             </div>
             <Badge variant="outline" className="text-sm">
               <FileDown className="w-4 h-4 mr-1" />
-              {templateId === 'faang-path' ? 'FAANG Path Template' : 'Modern Professional Template'}
+              FAANG Path Template
             </Badge>
           </div>
         </CardHeader>

@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import { Header } from "../components/Header"
 import { HeroUpload } from "../components/HeroUpload"
 import { HowItWorks } from "../components/HowItWorks"
-import { AutoApplySection } from "../components/AutoApplySection"
 import { ResultPanel } from "../components/ResultPanel"
 import { PricingPlans } from "../components/PricingPlans"
 import { Footer } from "../components/Footer"
@@ -14,8 +13,7 @@ import { ColorGradients } from "../components/ColorGradients"
 import { SaaSDashboard } from "../components/SaaSDashboard"
 import { Toaster } from "../components/ui/toaster"
 import { ThemeProvider } from "../contexts/ThemeContext"
-import { AuthProvider, useAuth } from "../contexts/AuthContext"
-import { ProtectedRoute } from "../components/ProtectedRoute"
+import { AuthProvider } from "../contexts/AuthContext"
 import { calculateMockScore, generateMockRecommendations } from "../lib/utils"
 import { mockAdaptedCV, mockStructuredResume } from "../lib/mock"
 import { apiService, APIResponse, APIError } from "../lib/api"
@@ -23,6 +21,7 @@ import { SuccessPage } from "./SuccessPage"
 import { CancelPage } from "./CancelPage"
 import { LoginPage } from "./LoginPage"
 import { RegisterPage } from "./RegisterPage"
+import { HistoryPage } from "./HistoryPage"
 
 // Import API test utilities in development
 if (process.env.NODE_ENV === 'development') {
@@ -31,8 +30,9 @@ if (process.env.NODE_ENV === 'development') {
 
 // Component for the main landing page content
 function LandingPageContent() {
+  const { user, isAuthenticated } = require("../contexts/AuthContext").useAuth()
   const [cvContent, setCvContent] = useState("")
-  const [jobDescription, setJobDescription] = useState("")
+  const [, setJobDescription] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [showResults, setShowResults] = useState(false)
   const [score, setScore] = useState(0)
@@ -40,8 +40,7 @@ function LandingPageContent() {
   const [recommendations, setRecommendations] = useState<string[]>([])
   const [apiResponse, setApiResponse] = useState<APIResponse | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [currentView, setCurrentView] = useState<'home' | 'dashboard'>('home')
-  const { isAuthenticated } = useAuth()
+  const [, setCurrentView] = useState<'home' | 'dashboard'>('home')
 
   const handleNavigation = (sectionId: string) => {
     if (sectionId === 'dashboard') {
@@ -73,8 +72,9 @@ function LandingPageContent() {
     setApiResponse(null)
     
     try {
-      // Call the real API
-      const response = await apiService.uploadResumeAndJob(resumeFile, jobDescription)
+      // Call the real API with userId if authenticated (saves to history)
+      const userId = isAuthenticated && user?.id ? user.id : undefined
+      const response = await apiService.uploadResumeAndJob(resumeFile, jobDescription, 'gpt-4o-mini', userId)
       
       // Update state with API response
       setApiResponse(response)
@@ -82,6 +82,12 @@ function LandingPageContent() {
       setCoverage(Math.round(response.coverage.must_have))
       setRecommendations(response.recommendations)
       setShowResults(true)
+      
+      // Notify user if analysis was saved to history
+      if (userId) {
+        console.log('Analysis saved to history for user:', userId)
+        // Note: A toast notification could be added here if desired
+      }
       
       // Scroll to results
       setTimeout(() => {
@@ -133,14 +139,9 @@ function LandingPageContent() {
             isLoading={isLoading}
           />
           
-          {/* Marketing sections - only show for non-authenticated users */}
-          {!isAuthenticated && (
-            <>
-              <HowItWorks />
-              <CompanyCarousel />
-              <AutoApplySection />
-            </>
-          )}
+          {/* Marketing sections */}
+          <HowItWorks />
+          <CompanyCarousel />
           
           <div data-results-section>
             <ResultPanel 
@@ -155,12 +156,12 @@ function LandingPageContent() {
             />
           </div>
           
-          {/* Pricing section - only show for non-authenticated users */}
-          {!isAuthenticated && <PricingPlans />}
+          {/* Pricing section */}
+          <PricingPlans />
         </main>
         
-        {/* Footer - only show for non-authenticated users */}
-        {!isAuthenticated && <Footer />}
+        {/* Footer */}
+        <Footer />
       </div>
       
       <Toaster />
@@ -174,32 +175,21 @@ export function App() {
       <AuthProvider>
         <Router>
           <Routes>
-            {/* Public routes */}
-            <Route path="/login" element={
-              <ProtectedRoute requireAuth={false}>
-                <LoginPage />
-              </ProtectedRoute>
-            } />
-            
-            <Route path="/register" element={
-              <ProtectedRoute requireAuth={false}>
-                <RegisterPage />
-              </ProtectedRoute>
-            } />
+            {/* Auth pages */}
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
             
             {/* Success page */}
             <Route path="/success" element={<SuccessPage />} />
             
             {/* Cancel page */}
             <Route path="/cancel" element={<CancelPage />} />
-            
 
             {/* SaaS Dashboard route */}
-            <Route path="/saas-dashboard" element={
-              <ProtectedRoute requireAuth={true}>
-                <SaaSDashboard />
-              </ProtectedRoute>
-            } />
+            <Route path="/saas-dashboard" element={<SaaSDashboard />} />
+            
+            {/* Analysis History route */}
+            <Route path="/history" element={<HistoryPage />} />
             
             {/* Main app (public) */}
             <Route path="/*" element={<LandingPageContent />} />

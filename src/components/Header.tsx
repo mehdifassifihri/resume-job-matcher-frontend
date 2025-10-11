@@ -1,10 +1,10 @@
 import { Button } from "./ui/button"
 import { ThemeToggle } from "./ui/theme-toggle"
 import { motion, AnimatePresence } from "framer-motion"
-import { Menu, X, Home, Info, DollarSign, Sparkles, LogIn, LogOut, Zap } from "lucide-react"
+import { Menu, X, Home, Info, DollarSign, Sparkles, LogIn, UserPlus, LogOut, User, Clock } from "lucide-react"
 import { useState, useEffect } from "react"
-import { useAuth } from "../contexts/AuthContext"
 import { useNavigate } from "react-router-dom"
+import { useAuth } from "../contexts/AuthContext"
 
 interface HeaderProps {
   onNavigate?: (sectionId: string) => void
@@ -13,13 +13,13 @@ interface HeaderProps {
 export function Header({ onNavigate }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('home')
-  const { isAuthenticated, logout } = useAuth()
   const navigate = useNavigate()
+  const { user, isAuthenticated, logout, isLoading } = useAuth()
 
   // Detect active section on scroll
   useEffect(() => {
     const handleScroll = () => {
-      const sections = isAuthenticated ? ['home', 'dashboard'] : ['home', 'how-it-works', 'pricing']
+      const sections = ['home', 'how-it-works', 'pricing']
       const scrollPosition = window.scrollY + 100
 
       for (const section of sections) {
@@ -36,7 +36,7 @@ export function Header({ onNavigate }: HeaderProps) {
 
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [isAuthenticated])
+  }, [])
 
   const scrollToSection = (sectionId: string) => {
     if (sectionId === 'dashboard') {
@@ -56,23 +56,17 @@ export function Header({ onNavigate }: HeaderProps) {
     setIsMenuOpen(false)
   }
 
-  const handleLogout = async () => {
-    try {
-      await logout()
-      navigate('/')
-    } catch (error) {
-      console.error('Logout error:', error)
-    }
+  const handleLogout = () => {
+    logout()
+    navigate('/')
+    setIsMenuOpen(false)
   }
+
 
   const navigationItems = [
     { id: 'home', label: 'Home', icon: Home },
-    ...(isAuthenticated ? [
-      { id: 'dashboard', label: 'Auto Apply', icon: Zap },
-    ] : [
-      { id: 'how-it-works', label: 'How it works', icon: Info },
-      { id: 'pricing', label: 'Pricing', icon: DollarSign },
-    ])
+    { id: 'how-it-works', label: 'How it works', icon: Info },
+    { id: 'pricing', label: 'Pricing', icon: DollarSign },
   ]
 
   return (
@@ -132,45 +126,75 @@ export function Header({ onNavigate }: HeaderProps) {
 
         {/* Actions Desktop */}
         <div className="hidden md:flex items-center space-x-3">
-          {/* Connection buttons commented out */}
-          {/* {isAuthenticated ? (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleLogout}
-              className="flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-red-500/10 text-red-500 hover:text-red-600 border-red-500/20"
-            >
-              <LogOut className="h-4 w-4" />
-              <span className="font-medium">Déconnexion</span>
-            </Button>
-          ) : (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => navigate('/login')}
-              className="flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 hover:bg-white/50 dark:hover:bg-neutral-surface-alt/50 text-neutral-text-primary hover:text-primary border-white/20 dark:border-[#0b1020]/50"
-            >
-              <LogIn className="h-4 w-4" />
-              <span className="font-medium">Connexion</span>
-            </Button>
-          )} */}
           <ThemeToggle />
+          
+          {!isLoading && (
+            <>
+              {isAuthenticated ? (
+                <>
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-white/50 dark:bg-[#0b1020]/40"
+                  >
+                    <User className="h-4 w-4 text-blue-600" />
+                    <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                      {user?.username}
+                    </span>
+                  </motion.div>
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => navigate('/history')}
+                      className="flex items-center space-x-2"
+                    >
+                      <Clock className="h-4 w-4" />
+                      <span>History</span>
+                    </Button>
+                  </motion.div>
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleLogout}
+                      className="flex items-center space-x-2"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      <span>Logout</span>
+                    </Button>
+                  </motion.div>
+                </>
+              ) : (
+                <>
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => navigate('/login')}
+                      className="flex items-center space-x-2"
+                    >
+                      <LogIn className="h-4 w-4" />
+                      <span>Login</span>
+                    </Button>
+                  </motion.div>
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button
+                      size="sm"
+                      onClick={() => navigate('/register')}
+                      className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white flex items-center space-x-2"
+                    >
+                      <UserPlus className="h-4 w-4" />
+                      <span>Sign Up</span>
+                    </Button>
+                  </motion.div>
+                </>
+              )}
+            </>
+          )}
         </div>
 
         {/* Menu Mobile Button */}
         <div className="md:hidden flex items-center space-x-2">
-          {/* Mobile connection button commented out */}
-          {/* {!isAuthenticated && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => navigate('/login')}
-              className="flex items-center space-x-1 px-3 py-2 rounded-lg transition-all duration-200 hover:bg-white/50 dark:hover:bg-neutral-surface-alt/50 text-neutral-text-primary hover:text-primary border-white/20 dark:border-[#0b1020]/50"
-            >
-              <LogIn className="h-4 w-4" />
-              <span className="text-sm font-medium">Connexion</span>
-            </Button>
-          )} */}
           <ThemeToggle />
           <motion.button
             whileHover={{ scale: 1.05 }}
@@ -219,41 +243,61 @@ export function Header({ onNavigate }: HeaderProps) {
                 )
               })}
               
-              {/* Auth Actions in Mobile Menu - Commented out */}
-              {/* {isAuthenticated ? (
-                <>
-                  <motion.div
-                    whileHover={{ x: 5 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <Button 
-                      variant="outline"
-                      size="sm"
-                      onClick={handleLogout}
-                      className="w-full justify-start space-x-3 rounded-lg border-red-500/20 hover:bg-red-500/10 text-red-500"
-                    >
-                      <LogOut className="h-4 w-4" />
-                      <span className="font-medium">Déconnexion</span>
-                    </Button>
-                  </motion.div>
-                </>
-              ) : (
-                <motion.div
-                  whileHover={{ x: 5 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Button 
-                    variant="outline"
-                    size="sm"
-                    onClick={() => navigate('/login')}
-                    className="w-full justify-start space-x-3 rounded-lg border-white/20 dark:border-[#0b1020]/50 hover:bg-white/50 dark:hover:bg-neutral-surface-alt/50"
-                  >
-                    <LogIn className="h-4 w-4" />
-                    <span className="font-medium">Connexion</span>
-                  </Button>
-                </motion.div>
-              )} */}
-              
+              {!isLoading && (
+                <div className="pt-2 border-t border-slate-300 dark:border-slate-700">
+                  {isAuthenticated ? (
+                    <>
+                      <div className="flex items-center space-x-2 px-3 py-2 mb-2 rounded-lg bg-white/50 dark:bg-[#0b1020]/40">
+                        <User className="h-4 w-4 text-blue-600" />
+                        <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                          {user?.username}
+                        </span>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          navigate('/history')
+                          setIsMenuOpen(false)
+                        }}
+                        className="w-full justify-start space-x-3 mb-2"
+                      >
+                        <Clock className="h-4 w-4" />
+                        <span>History</span>
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleLogout}
+                        className="w-full justify-start space-x-3"
+                      >
+                        <LogOut className="h-4 w-4" />
+                        <span>Logout</span>
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => navigate('/login')}
+                        className="w-full justify-start space-x-3 mb-2"
+                      >
+                        <LogIn className="h-4 w-4" />
+                        <span>Login</span>
+                      </Button>
+                      <Button
+                        size="sm"
+                        onClick={() => navigate('/register')}
+                        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white justify-start space-x-3"
+                      >
+                        <UserPlus className="h-4 w-4" />
+                        <span>Sign Up</span>
+                      </Button>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
           </motion.div>
         )}

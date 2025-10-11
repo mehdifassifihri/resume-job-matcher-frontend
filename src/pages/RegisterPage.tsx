@@ -1,305 +1,303 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { Eye, EyeOff, Mail, Lock, User, UserCheck, Loader2, AlertCircle } from 'lucide-react';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { Alert, AlertDescription } from '../components/ui/alert';
-import { useAuth } from '../contexts/AuthContext';
-import { BackgroundEffects } from '../components/BackgroundEffects';
-import { InteractiveParticles } from '../components/InteractiveParticles';
-import { ColorGradients } from '../components/ColorGradients';
+import { useState, useEffect } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
+import { Button } from '../components/ui/button'
+import { Input } from '../components/ui/input'
+import { Label } from '../components/ui/label'
+import { motion } from 'framer-motion'
+import { UserPlus, Mail, Lock, User, AlertCircle, Sparkles, User2 } from 'lucide-react'
+import { ThemeToggle } from '../components/ui/theme-toggle'
 
 export function RegisterPage() {
-  const [formData, setFormData] = useState({
-    email: '',
-    username: '',
-    full_name: '',
-    password: '',
-    confirmPassword: ''
-  });
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  
-  const { register, isAuthenticated } = useAuth();
-  const navigate = useNavigate();
+  const [email, setEmail] = useState('')
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [fullName, setFullName] = useState('')
+  const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [errors, setErrors] = useState<{
+    email?: string
+    username?: string
+    password?: string
+  }>({})
 
-  // Rediriger vers l'accueil quand l'utilisateur est connecté
+  const { register, isAuthenticated, isLoading: authLoading } = useAuth()
+  const navigate = useNavigate()
+
+  // Rediriger si l'utilisateur est déjà connecté
   useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/');
+    if (!authLoading && isAuthenticated) {
+      navigate('/')
     }
-  }, [isAuthenticated, navigate]);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
+  }, [isAuthenticated, authLoading, navigate])
 
   const validateForm = () => {
-    if (!formData.email || !formData.username || !formData.full_name || !formData.password) {
-      setError('Tous les champs sont obligatoires');
-      return false;
+    const newErrors: {
+      email?: string
+      username?: string
+      password?: string
+    } = {}
+
+    // Email validation
+    if (!email) {
+      newErrors.email = 'Email is required'
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      newErrors.email = 'Email is invalid'
     }
 
-    if (formData.password !== formData.confirmPassword) {
-      setError('Les mots de passe ne correspondent pas');
-      return false;
+    // Username validation
+    if (!username) {
+      newErrors.username = 'Username is required'
+    } else if (username.length < 3) {
+      newErrors.username = 'Username must be at least 3 characters'
+    } else if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+      newErrors.username = 'Username can only contain letters, numbers, and underscores'
     }
 
-    if (formData.password.length < 6) {
-      setError('Le mot de passe doit contenir au moins 6 caractères');
-      return false;
+    // Password validation
+    if (!password) {
+      newErrors.password = 'Password is required'
+    } else if (password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters'
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      setError('Veuillez entrer une adresse email valide');
-      return false;
-    }
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
-    return true;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError('')
 
     if (!validateForm()) {
-      return;
+      return
     }
 
-    setIsLoading(true);
+    setIsLoading(true)
 
     try {
-      await register({
-        email: formData.email,
-        username: formData.username,
-        full_name: formData.full_name,
-        password: formData.password
-      });
-      
-      // La redirection se fait automatiquement via useEffect quand isAuthenticated devient true
-    } catch (error: any) {
-      setError(error.message || 'Erreur lors de l\'inscription. Veuillez réessayer.');
+      await register(email, username, password, fullName || undefined)
+      navigate('/')
+    } catch (err: any) {
+      console.error('Registration error:', err)
+      // Handle specific error messages from the API
+      const errorMessage = err.message || 'Registration failed'
+      if (errorMessage.includes('Email already registered')) {
+        setError('This email is already registered. Please try logging in or use a different email.')
+      } else if (errorMessage.includes('Username already taken')) {
+        setError('This username is already taken. Please choose a different username.')
+      } else {
+        setError(errorMessage)
+      }
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
-    <div className="min-h-screen bg-neutral-bg text-neutral-text-primary transition-all duration-300 relative flex items-center justify-center p-4">
-      <BackgroundEffects />
-      <InteractiveParticles />
-      <ColorGradients />
-      
-      <div className="relative z-10 w-full max-w-md">
-        <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl">
-          <CardHeader className="text-center pb-6">
-            <div className="mx-auto mb-4 w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center">
-              <UserCheck className="w-8 h-8 text-primary" />
-            </div>
-            <CardTitle className="text-3xl font-poppins-bold text-neutral-text-primary">
-              Créer un compte
-            </CardTitle>
-            <CardDescription className="text-lg font-poppins-medium text-neutral-text-secondary">
-              Rejoignez-nous et commencez à utiliser nos services
-            </CardDescription>
-          </CardHeader>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-[#0b1020] dark:via-[#0f1629] dark:to-[#0b1020] flex items-center justify-center p-4">
+      {/* Theme Toggle - Top Right */}
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
 
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {error && (
-                <Alert variant="destructive" className="bg-red-500/10 border-red-500/20">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription className="text-red-400">
-                    {error}
-                  </AlertDescription>
-                </Alert>
-              )}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-md"
+      >
+        {/* Logo and Title */}
+        <div className="text-center mb-8">
+          <motion.div
+            className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-purple-600 mb-4 shadow-lg"
+            whileHover={{ scale: 1.05, rotate: 5 }}
+            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+          >
+            <Sparkles className="w-8 h-8 text-white" />
+          </motion.div>
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
+            Create Account
+          </h1>
+          <p className="text-slate-600 dark:text-slate-400">
+            Join us to start matching your resume with jobs
+          </p>
+        </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="full_name" className="text-sm font-poppins-medium text-neutral-text-primary">
-                  Nom complet
-                </Label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-neutral-text-secondary" />
-                  <Input
-                    id="full_name"
-                    name="full_name"
-                    type="text"
-                    placeholder="Votre nom complet"
-                    value={formData.full_name}
-                    onChange={handleInputChange}
-                    className="pl-10 font-poppins"
-                    required
-                    disabled={isLoading}
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="username" className="text-sm font-poppins-medium text-neutral-text-primary">
-                  Nom d'utilisateur
-                </Label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-neutral-text-secondary" />
-                  <Input
-                    id="username"
-                    name="username"
-                    type="text"
-                    placeholder="Votre nom d'utilisateur"
-                    value={formData.username}
-                    onChange={handleInputChange}
-                    className="pl-10 font-poppins"
-                    required
-                    disabled={isLoading}
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-poppins-medium text-neutral-text-primary">
-                  Adresse email
-                </Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-neutral-text-secondary" />
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    placeholder="votre@email.com"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    className="pl-10 font-poppins"
-                    required
-                    disabled={isLoading}
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-poppins-medium text-neutral-text-primary">
-                  Mot de passe
-                </Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-neutral-text-secondary" />
-                  <Input
-                    id="password"
-                    name="password"
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder="Votre mot de passe"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    className="pl-10 pr-10 font-poppins"
-                    required
-                    disabled={isLoading}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-neutral-text-secondary hover:text-neutral-text-primary transition-colors"
-                    disabled={isLoading}
-                  >
-                    {showPassword ? (
-                      <EyeOff className="w-4 h-4" />
-                    ) : (
-                      <Eye className="w-4 h-4" />
-                    )}
-                  </button>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="confirmPassword" className="text-sm font-poppins-medium text-neutral-text-primary">
-                  Confirmer le mot de passe
-                </Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-neutral-text-secondary" />
-                  <Input
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    type={showConfirmPassword ? 'text' : 'password'}
-                    placeholder="Confirmez votre mot de passe"
-                    value={formData.confirmPassword}
-                    onChange={handleInputChange}
-                    className="pl-10 pr-10 font-poppins"
-                    required
-                    disabled={isLoading}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-neutral-text-secondary hover:text-neutral-text-primary transition-colors"
-                    disabled={isLoading}
-                  >
-                    {showConfirmPassword ? (
-                      <EyeOff className="w-4 h-4" />
-                    ) : (
-                      <Eye className="w-4 h-4" />
-                    )}
-                  </button>
-                </div>
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full font-poppins-medium"
-                size="lg"
-                disabled={isLoading}
+        {/* Register Form Card */}
+        <motion.div
+          className="bg-white/80 dark:bg-[#0f1629]/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 dark:border-[#0b1020]/50 p-8"
+          whileHover={{ boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)" }}
+        >
+          <form onSubmit={handleRegister} className="space-y-5">
+            {/* Global Error Message */}
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 flex items-start space-x-3"
               >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Création du compte...
-                  </>
-                ) : (
-                  'Créer mon compte'
-                )}
-              </Button>
-            </form>
+                <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-red-800 dark:text-red-200">{error}</p>
+              </motion.div>
+            )}
 
-            <div className="mt-6 text-center">
-              <p className="text-sm text-neutral-text-secondary font-poppins">
-                Vous avez déjà un compte ?{' '}
-                <Link 
-                  to="/login" 
-                  className="text-primary hover:text-primary/80 font-poppins-medium transition-colors"
-                >
-                  Se connecter
-                </Link>
+            {/* Email Field */}
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-slate-700 dark:text-slate-300">
+                Email *
+              </Label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value)
+                    setErrors({ ...errors, email: undefined })
+                  }}
+                  placeholder="you@example.com"
+                  className={`pl-10 ${errors.email ? 'border-red-500' : ''}`}
+                  disabled={isLoading}
+                />
+              </div>
+              {errors.email && (
+                <p className="text-sm text-red-600 dark:text-red-400">{errors.email}</p>
+              )}
+            </div>
+
+            {/* Username Field */}
+            <div className="space-y-2">
+              <Label htmlFor="username" className="text-slate-700 dark:text-slate-300">
+                Username *
+              </Label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <Input
+                  id="username"
+                  type="text"
+                  value={username}
+                  onChange={(e) => {
+                    setUsername(e.target.value)
+                    setErrors({ ...errors, username: undefined })
+                  }}
+                  placeholder="johndoe"
+                  className={`pl-10 ${errors.username ? 'border-red-500' : ''}`}
+                  disabled={isLoading}
+                />
+              </div>
+              {errors.username && (
+                <p className="text-sm text-red-600 dark:text-red-400">{errors.username}</p>
+              )}
+            </div>
+
+            {/* Full Name Field (Optional) */}
+            <div className="space-y-2">
+              <Label htmlFor="fullName" className="text-slate-700 dark:text-slate-300">
+                Full Name <span className="text-slate-400 text-xs">(Optional)</span>
+              </Label>
+              <div className="relative">
+                <User2 className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <Input
+                  id="fullName"
+                  type="text"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="John Doe"
+                  className="pl-10"
+                  disabled={isLoading}
+                />
+              </div>
+            </div>
+
+            {/* Password Field */}
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-slate-700 dark:text-slate-300">
+                Password *
+              </Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value)
+                    setErrors({ ...errors, password: undefined })
+                  }}
+                  placeholder="••••••••"
+                  className={`pl-10 ${errors.password ? 'border-red-500' : ''}`}
+                  disabled={isLoading}
+                />
+              </div>
+              {errors.password && (
+                <p className="text-sm text-red-600 dark:text-red-400">{errors.password}</p>
+              )}
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Must be at least 6 characters
               </p>
             </div>
 
-            <div className="mt-4 text-center">
-              <Link 
-                to="/" 
-                className="text-sm text-neutral-text-secondary hover:text-neutral-text-primary font-poppins transition-colors"
-              >
-                ← Retour à l'accueil
-              </Link>
+            {/* Submit Button */}
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 mt-6"
+            >
+              {isLoading ? (
+                <span className="flex items-center justify-center">
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Creating account...
+                </span>
+              ) : (
+                <span className="flex items-center justify-center">
+                  <UserPlus className="w-5 h-5 mr-2" />
+                  Create Account
+                </span>
+              )}
+            </Button>
+          </form>
+
+          {/* Divider */}
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-300 dark:border-slate-700"></div>
             </div>
-          </CardContent>
-        </Card>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-4 bg-white dark:bg-[#0f1629] text-slate-500 dark:text-slate-400">
+                Already have an account?
+              </span>
+            </div>
+          </div>
 
-        {/* Informations de test */}
-        <div className="mt-6 p-4 bg-white/5 rounded-lg border border-white/10">
-          <h3 className="text-sm font-poppins-bold text-neutral-text-primary mb-2">
-            🧪 Test d'inscription
-          </h3>
-          <p className="text-xs text-neutral-text-secondary font-poppins">
-            Utilisez n'importe quelle adresse email valide pour tester l'inscription.
-          </p>
-        </div>
-      </div>
+          {/* Login Link */}
+          <div className="text-center">
+            <Link to="/login">
+              <Button
+                variant="outline"
+                className="w-full border-2 border-blue-600 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 font-semibold py-6 rounded-xl"
+              >
+                Sign In
+              </Button>
+            </Link>
+          </div>
+
+          {/* Back to Home */}
+          <div className="text-center mt-6">
+            <Link
+              to="/"
+              className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
+            >
+              ← Back to Home
+            </Link>
+          </div>
+        </motion.div>
+      </motion.div>
     </div>
-  );
+  )
 }
-
 

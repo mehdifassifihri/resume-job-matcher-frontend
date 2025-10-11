@@ -1,6 +1,5 @@
 // API service for resume matching
 import { config } from './config'
-import { authService } from './auth'
 
 export interface APIResponse {
   score: number
@@ -110,12 +109,15 @@ class APIService {
 
     // Add authorization header if required
     if (requireAuth) {
-      const authHeaders = authService.getAuthHeaders()
-      Object.assign(headers, authHeaders)
+      const { authService } = require('./auth')
+      const accessToken = authService.getAccessToken()
+      if (accessToken) {
+        headers['Authorization'] = `Bearer ${accessToken}`
+      }
     }
 
     try {
-      const response = await fetch(url, {
+      let response = await fetch(url, {
         ...options,
         signal: controller.signal,
         headers,
@@ -123,10 +125,35 @@ class APIService {
 
       if (timeoutId) clearTimeout(timeoutId)
 
+      // Si 401 et authentification requise, essayer de rafraîchir le token
+      if (response.status === 401 && requireAuth) {
+        const { authService } = require('./auth')
+        try {
+          // Rafraîchir le token
+          const newAccessToken = await authService.refreshToken()
+          
+          // Réessayer la requête avec le nouveau token
+          headers['Authorization'] = `Bearer ${newAccessToken}`
+          
+          response = await fetch(url, {
+            ...options,
+            signal: controller.signal,
+            headers,
+          })
+        } catch (refreshError) {
+          // Si le rafraîchissement échoue, déconnecter l'utilisateur
+          authService.logout()
+          throw new APIError({
+            message: 'Session expired. Please login again.',
+            status: 401,
+          })
+        }
+      }
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
         throw new APIError({
-          message: errorData.message || `HTTP ${response.status}: ${response.statusText}`,
+          message: errorData.detail || errorData.message || `HTTP ${response.status}: ${response.statusText}`,
           status: response.status,
           details: errorData,
         })
@@ -156,7 +183,8 @@ class APIService {
   async uploadResumeAndJob(
     resumeFile: File,
     jobDescription: File | string,
-    model: string = 'gpt-4o-mini'
+    model: string = 'gpt-4o-mini',
+    userId?: number
   ): Promise<APIResponse> {
     const formData = new FormData()
     formData.append('resume_file', resumeFile)
@@ -170,10 +198,15 @@ class APIService {
     
     formData.append('model', model)
 
+    // Add user_id if provided (saves analysis to history)
+    if (userId) {
+      formData.append('user_id', userId.toString())
+    }
+
     const response = await this.makeRequest<APIResponse>(config.api.endpoints.upload, {
       method: 'POST',
       body: formData,
-    }, true) // requireAuth = true
+    }, false) // requireAuth = false (no auth system currently)
 
     // Transform skills structure if needed (handle old API format)
     if (response.structured_resume?.skills) {
@@ -181,6 +214,12 @@ class APIService {
     }
 
     return response
+  }
+
+  async getAnalysisHistory(userId: number): Promise<any[]> {
+    return this.makeRequest<any[]>(`/history/analyses/${userId}`, {
+      method: 'GET',
+    }, true) // requireAuth = true pour inclure le token JWT
   }
 
   private transformSkillsStructure(skills: any): any {

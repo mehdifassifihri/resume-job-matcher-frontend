@@ -6,15 +6,11 @@ import {
   Settings, 
   Linkedin, 
   FileText, 
-  Calendar,
   User,
   Trash2,
   CheckCircle,
   Link as LinkIcon,
   X,
-  Zap,
-  TrendingUp,
-  Activity,
   LayoutDashboard,
   Home,
   ArrowLeft
@@ -35,7 +31,7 @@ export function SaaSDashboard() {
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState<'upload' | 'preferences' | 'linkedin'>('upload')
   const [onboardingComplete, setOnboardingComplete] = useState(false)
-  const [currentStep, setCurrentStep] = useState(1)
+  const [, setCurrentStep] = useState(1)
   const [stepStatus, setStepStatus] = useState({
     step1: 'current', // completed, current, locked
     step2: 'locked',
@@ -121,10 +117,6 @@ export function SaaSDashboard() {
     })
   }
 
-  const handleSavePreferences = () => {
-    // Save preferences logic here
-    console.log('Saving preferences:', preferences)
-  }
 
   const completeStep1 = () => {
     if (uploadedFile) {

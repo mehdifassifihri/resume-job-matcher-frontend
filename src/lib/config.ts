@@ -6,7 +6,13 @@ export const config = {
     timeout: parseInt(process.env.REACT_APP_API_TIMEOUT || '120000'), // 2 minutes
     endpoints: {
       upload: '/match/upload',
-      health: '/health'
+      health: '/health',
+      auth: {
+        register: '/auth/register',
+        login: '/auth/login',
+        refresh: '/auth/refresh',
+        me: '/auth/me'
+      }
     }
   },
   
