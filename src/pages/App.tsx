@@ -23,11 +23,6 @@ import { LoginPage } from "./LoginPage"
 import { RegisterPage } from "./RegisterPage"
 import { HistoryPage } from "./HistoryPage"
 
-// Import API test utilities in development
-if (process.env.NODE_ENV === 'development') {
-  import('../lib/api-test')
-}
-
 // Component for the main landing page content
 function LandingPageContent() {
   const { user, isAuthenticated } = require("../contexts/AuthContext").useAuth()
