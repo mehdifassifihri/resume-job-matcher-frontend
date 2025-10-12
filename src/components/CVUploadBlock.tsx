@@ -17,7 +17,7 @@ export function CVUploadBlock(_props: CVUploadBlockProps) {
     const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'))
     
     if (!allowedTypes.includes(fileExtension)) {
-      alert('Format de fichier non supporté. Veuillez utiliser PDF, DOCX ou TXT.')
+      alert('Unsupported file format. Please use PDF, DOCX, or TXT.')
       return
     }
 

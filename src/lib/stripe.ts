@@ -28,7 +28,8 @@ export interface CreateCheckoutSessionParams {
 // Create a checkout session (calls your backend)
 export const createCheckoutSession = async (params: CreateCheckoutSessionParams) => {
   try {
-    const response = await fetch('http://localhost:3001/api/create-checkout-session', {
+    const apiBaseUrl = config.api.baseURL || window.location.origin;
+    const response = await fetch(`${apiBaseUrl}/api/create-checkout-session`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -43,7 +44,6 @@ export const createCheckoutSession = async (params: CreateCheckoutSessionParams)
     const session = await response.json();
     return session;
   } catch (error) {
-    console.error('Error creating checkout session:', error);
     throw error;
   }
 };
@@ -80,36 +80,33 @@ export const redirectToCheckout = async (priceId: string, planName: string) => {
     });
     */
 
-    // Créer la session de checkout via le backend
+    // Create checkout session via backend
     const session = await createCheckoutSession({
       priceId,
       successUrl,
       cancelUrl,
       metadata: {
         planName,
-        userId: 'current-user-id' // TODO: Récupérer l'ID utilisateur depuis le contexte d'auth
+        userId: 'current-user-id' // TODO: Get user ID from auth context
       }
     });
 
-    // Rediriger vers Stripe Checkout
+    // Redirect to Stripe Checkout
     const { error } = await stripe.redirectToCheckout({ 
       sessionId: session.id 
     });
 
     if (error) {
-      console.error('Stripe checkout error:', error);
       throw error;
     }
 
   } catch (error) {
-    console.error('Error redirecting to checkout:', error);
     throw error;
   }
 };
 
 // Handle successful payment
 export const handlePaymentSuccess = (sessionId: string) => {
-  console.log('Payment successful for session:', sessionId);
   // Here you would typically:
   // 1. Verify the payment with your backend
   // 2. Update user's subscription status
@@ -118,6 +115,5 @@ export const handlePaymentSuccess = (sessionId: string) => {
 
 // Handle cancelled payment
 export const handlePaymentCancel = () => {
-  console.log('Payment cancelled');
   // Redirect back to pricing page or show cancellation message
 };

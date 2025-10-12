@@ -18,7 +18,7 @@ export function LoginPage() {
   const { login, isAuthenticated, isLoading: authLoading } = useAuth()
   const navigate = useNavigate()
 
-  // Rediriger si l'utilisateur est déjà connecté
+  // Redirect if user is already authenticated
   useEffect(() => {
     if (!authLoading && isAuthenticated) {
       navigate('/')
@@ -60,7 +60,6 @@ export function LoginPage() {
       await login(email, password)
       navigate('/')
     } catch (err: any) {
-      console.error('Login error:', err)
       // Handle specific error messages from the API
       const errorMessage = err.message || 'Login failed'
       if (errorMessage.includes('Incorrect email or password')) {

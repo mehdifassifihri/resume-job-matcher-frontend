@@ -1,377 +1,367 @@
-# Authentification JWT - Documentation
+# JWT Authentication - Documentation
 
-## Vue d'ensemble
+## Overview
 
-Le frontend utilise maintenant l'authentification JWT (JSON Web Token) pour les requêtes sécurisées vers le backend.
+The frontend now uses JWT (JSON Web Token) authentication for secure requests to the backend.
 
-## Comment ça fonctionne
+## How It Works
 
-### 1. **Connexion de l'utilisateur**
+### 1. **User Login**
 
-Lorsqu'un utilisateur se connecte:
+When a user logs in:
 ```typescript
-// L'utilisateur entre email et password
+// User enters email and password
 await authService.login({ email, password })
 
-// Le backend retourne:
+// Backend returns:
 {
   access_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
   refresh_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
   token_type: "Bearer"
 }
 
-// Les tokens sont stockés dans localStorage
+// Tokens are stored in localStorage
 localStorage.setItem('access_token', access_token)
 localStorage.setItem('refresh_token', refresh_token)
 ```
 
-### 2. **Requêtes authentifiées**
+### 2. **Authenticated Requests**
 
-Lorsqu'une requête nécessite l'authentification:
+When a request requires authentication:
 ```typescript
-// Le frontend ajoute automatiquement le token JWT
+// Frontend automatically adds JWT token
 headers['Authorization'] = `Bearer ${accessToken}`
 ```
 
-### 3. **Rafraîchissement automatique du token**
+### 3. **Automatic Token Refresh**
 
-Si le token expire (erreur 401):
+If the token expires (401 error):
 ```typescript
-// 1. Le frontend détecte l'erreur 401
-// 2. Appelle automatiquement /auth/refresh avec le refresh_token
-// 3. Obtient un nouveau access_token
-// 4. Réessaye la requête originale avec le nouveau token
+// 1. Frontend detects 401 error
+// 2. Automatically calls /auth/refresh with refresh_token
+// 3. Gets a new access_token
+// 4. Retries original request with new token
 ```
 
-Si le refresh_token est également expiré:
+If the refresh_token is also expired:
 ```typescript
-// 1. Déconnecte automatiquement l'utilisateur
-// 2. Supprime les tokens du localStorage
-// 3. Redirige vers la page de connexion
+// 1. Automatically logs out user
+// 2. Removes tokens from localStorage
+// 3. Redirects to login page
 ```
 
-## Endpoints protégés
+### 4. **User Information**
 
-### ✅ Avec authentification JWT requise:
-
-- **`GET /history/analyses/{user_id}`** - Récupérer l'historique des analyses
-  - Nécessite: `Authorization: Bearer {access_token}`
-  - Erreur 403 si le token est manquant ou invalide
-
-- **`GET /auth/me`** - Obtenir les informations de l'utilisateur connecté
-  - Nécessite: `Authorization: Bearer {access_token}`
-
-### ❌ Sans authentification (publics):
-
-- **`POST /match/upload`** - Analyser un CV
-  - Paramètre `user_id` optionnel
-  - Si `user_id` fourni → analyse sauvegardée dans l'historique
-  - Si `user_id` absent → analyse en temps réel uniquement
-
-- **`POST /auth/register`** - Créer un compte
-- **`POST /auth/login`** - Se connecter
-- **`POST /auth/refresh`** - Rafraîchir le token
-
-## Implémentation dans le code
-
-### API Service (`src/lib/api.ts`)
-
-La méthode `makeRequest` gère automatiquement l'authentification:
-
+To get current user information:
 ```typescript
-private async makeRequest<T>(
-  endpoint: string,
-  options: RequestInit = {},
-  requireAuth: boolean = false  // ← Paramètre clé
-): Promise<T> {
-  // Si requireAuth = true
-  if (requireAuth) {
-    // 1. Récupère le token depuis localStorage
-    const accessToken = authService.getAccessToken()
-    
-    // 2. Ajoute le header Authorization
-    headers['Authorization'] = `Bearer ${accessToken}`
-  }
-  
-  // 3. Si erreur 401, rafraîchit automatiquement le token
-  if (response.status === 401 && requireAuth) {
-    const newAccessToken = await authService.refreshToken()
-    // Réessaye la requête
-  }
+// Call /auth/me with access token
+const user = await authService.getCurrentUser()
+
+// Returns user data:
+{
+  id: 1,
+  email: "user@example.com",
+  username: "johndoe",
+  full_name: "John Doe",
+  created_at: "2024-01-01T00:00:00",
+  is_active: true
 }
 ```
 
-### Utilisation:
+## Implementation
+
+### Authentication Service
+
+File: `src/lib/auth.ts`
 
 ```typescript
-// Requête AVEC authentification
-await apiService.getAnalysisHistory(userId)  // requireAuth = true
-
-// Requête SANS authentification
-await apiService.uploadResumeAndJob(file, job)  // requireAuth = false
+class AuthService {
+  // Login
+  async login(credentials: LoginRequest): Promise<AuthResponse>
+  
+  // Register
+  async register(data: RegisterRequest): Promise<AuthResponse>
+  
+  // Get current user
+  async getCurrentUser(): Promise<User>
+  
+  // Refresh token
+  async refreshToken(): Promise<AuthResponse>
+  
+  // Logout
+  logout(): void
+  
+  // Check authentication
+  isAuthenticated(): boolean
+  
+  // Get access token
+  getAccessToken(): string | null
+}
 ```
 
-## Flux complet de l'utilisateur
+### Auth Context
 
-### Scénario 1: Premier accès à l'historique
+File: `src/contexts/AuthContext.tsx`
 
-```
-1. Utilisateur clique sur "History"
-   ↓
-2. AnalysisHistory.tsx appelle apiService.getAnalysisHistory(userId)
-   ↓
-3. API service récupère le token depuis localStorage
-   ↓
-4. Ajoute header: Authorization: Bearer {token}
-   ↓
-5. Envoie GET /history/analyses/{userId}
-   ↓
-6. Backend vérifie le token JWT
-   ↓
-7. Si valide → retourne l'historique
-   Si invalide → erreur 401 ou 403
-```
-
-### Scénario 2: Token expiré
-
-```
-1. Utilisateur clique sur "History"
-   ↓
-2. Requête avec ancien token
-   ↓
-3. Backend retourne 401 Unauthorized
-   ↓
-4. Frontend détecte 401
-   ↓
-5. Appelle automatiquement /auth/refresh
-   ↓
-6. Backend valide refresh_token
-   ↓
-7. Retourne nouveau access_token
-   ↓
-8. Frontend stocke le nouveau token
-   ↓
-9. Réessaye la requête originale
-   ↓
-10. ✅ Succès!
-```
-
-### Scénario 3: Session complètement expirée
-
-```
-1. Requête avec token expiré
-   ↓
-2. Backend retourne 401
-   ↓
-3. Frontend essaye de rafraîchir
-   ↓
-4. refresh_token aussi expiré
-   ↓
-5. Backend retourne erreur
-   ↓
-6. Frontend:
-   - Supprime les tokens
-   - Déconnecte l'utilisateur
-   - Affiche: "Session expired. Please login again."
-   - Redirige vers /login
-```
-
-## Gestion des erreurs
-
-### Code d'erreur 401 (Unauthorized)
-- **Cause**: Token expiré ou invalide
-- **Action**: Rafraîchissement automatique du token
-- **Si échec**: Déconnexion + redirection vers /login
-
-### Code d'erreur 403 (Forbidden)
-- **Cause**: Token manquant ou utilisateur non autorisé
-- **Action**: Affichage d'un message d'erreur
-- **Message**: "Authentication required. Please login."
-
-### Code d'erreur 500 (Server Error)
-- **Cause**: Erreur serveur
-- **Action**: Affichage d'un message d'erreur
-- **Message**: "Server error. Please try again later."
-
-## Sécurité
-
-### ✅ Bonnes pratiques implémentées:
-
-1. **Tokens stockés dans localStorage**
-   - Facile d'accès pour le frontend
-   - Persiste entre les sessions
-   - ⚠️ Note: Pour plus de sécurité en production, considérer httpOnly cookies
-
-2. **Rafraîchissement automatique**
-   - Évite de demander à l'utilisateur de se reconnecter constamment
-   - Améliore l'UX
-
-3. **Déconnexion automatique**
-   - Si les tokens sont invalides
-   - Protection contre les tokens compromis
-
-4. **Headers sécurisés**
-   - Format standard: `Authorization: Bearer {token}`
-   - Compatible avec tous les backends OAuth2/JWT
-
-### 🔒 Recommandations pour la production:
-
-1. **HTTPS obligatoire**
-   - Tous les appels API doivent passer par HTTPS
-   - Empêche l'interception des tokens
-
-2. **Expiration courte des access_token**
-   - Recommandé: 15-30 minutes
-   - Réduit la fenêtre d'exploitation en cas de vol
-
-3. **Expiration longue des refresh_token**
-   - Recommandé: 7-30 jours
-   - Balance entre sécurité et UX
-
-4. **Content Security Policy (CSP)**
-   - Empêche l'injection de scripts malveillants
-   - Protège contre XSS
-
-## Testing
-
-### Test manuel:
-
-1. **Se connecter**
-   ```
-   - Aller sur /login
-   - Entrer email et password
-   - Vérifier que la connexion fonctionne
-   ```
-
-2. **Accéder à l'historique**
-   ```
-   - Cliquer sur "History"
-   - Vérifier que l'historique se charge
-   - Vérifier dans DevTools > Network:
-     * Header: Authorization: Bearer {token}
-     * Status: 200 OK
-   ```
-
-3. **Tester le rafraîchissement**
-   ```
-   - Attendre que le token expire (ou le supprimer manuellement)
-   - Essayer d'accéder à l'historique
-   - Vérifier que le rafraîchissement automatique fonctionne
-   ```
-
-4. **Tester la déconnexion automatique**
-   ```
-   - Supprimer les deux tokens de localStorage
-   - Essayer d'accéder à l'historique
-   - Vérifier la redirection vers /login
-   ```
-
-### Vérification dans DevTools:
-
-```javascript
-// Vérifier les tokens stockés
-localStorage.getItem('access_token')
-localStorage.getItem('refresh_token')
-
-// Supprimer les tokens manuellement (pour tester)
-localStorage.removeItem('access_token')
-localStorage.removeItem('refresh_token')
-```
-
-## Debugging
-
-### Problème: "403 Forbidden"
-
-**Vérifications:**
-1. ✅ L'utilisateur est-il connecté?
-   ```javascript
-   authService.isAuthenticated()  // doit retourner true
-   ```
-
-2. ✅ Le token est-il présent?
-   ```javascript
-   authService.getAccessToken()  // doit retourner un token
-   ```
-
-3. ✅ Le header Authorization est-il envoyé?
-   - Ouvrir DevTools > Network
-   - Cliquer sur la requête
-   - Vérifier: Request Headers > Authorization: Bearer {token}
-
-4. ✅ Le token est-il valide?
-   - Decoder le JWT sur [jwt.io](https://jwt.io)
-   - Vérifier la date d'expiration (exp)
-   - Vérifier le user_id
-
-### Problème: "Session expired" en boucle
-
-**Cause**: Le refresh_token est également expiré
-
-**Solution:**
-1. Se déconnecter complètement
-2. Se reconnecter
-3. Un nouveau refresh_token sera généré
-
-### Problème: Token non envoyé
-
-**Vérifications:**
-1. La méthode utilise-t-elle `requireAuth: true`?
-2. Le token est-il dans localStorage?
-3. Y a-t-il des erreurs dans la console?
-
-## Code examples
-
-### Exemple complet d'une requête authentifiée:
+React Context providing authentication state and methods throughout the application.
 
 ```typescript
-// Component
-import { apiService } from '../lib/api'
+interface AuthContextType {
+  user: User | null
+  isAuthenticated: boolean
+  isLoading: boolean
+  login: (email: string, password: string) => Promise<void>
+  register: (email: string, username: string, password: string, fullName?: string) => Promise<void>
+  logout: () => void
+  refreshUser: () => Promise<void>
+}
+```
+
+Usage:
+```typescript
 import { useAuth } from '../contexts/AuthContext'
 
 function MyComponent() {
-  const { user } = useAuth()
+  const { user, isAuthenticated, login, logout } = useAuth()
   
-  const loadData = async () => {
-    try {
-      // Cette requête inclura automatiquement le token JWT
-      const data = await apiService.getAnalysisHistory(user.id)
-      console.log('Data loaded:', data)
-    } catch (error) {
-      if (error.message.includes('Session expired')) {
-        // L'utilisateur sera redirigé vers /login
-        console.log('Please login again')
-      } else {
-        console.error('Error:', error)
-      }
-    }
-  }
-  
-  return <button onClick={loadData}>Load History</button>
+  // Use authentication in component
 }
 ```
 
-### Exemple d'ajout d'un nouvel endpoint protégé:
+## API Endpoints Required
+
+Your backend must implement the following endpoints:
+
+### 1. Register
+```
+POST /auth/register
+
+Body:
+{
+  "email": "user@example.com",
+  "username": "johndoe",
+  "password": "securepassword",
+  "full_name": "John Doe"  // optional
+}
+
+Response:
+{
+  "access_token": "...",
+  "refresh_token": "...",
+  "token_type": "Bearer"
+}
+```
+
+### 2. Login
+```
+POST /auth/login
+
+Body:
+{
+  "email": "user@example.com",
+  "password": "securepassword"
+}
+
+Response:
+{
+  "access_token": "...",
+  "refresh_token": "...",
+  "token_type": "Bearer"
+}
+```
+
+### 3. Refresh Token
+```
+POST /auth/refresh
+
+Headers:
+Authorization: Bearer {refresh_token}
+
+Response:
+{
+  "access_token": "...",
+  "token_type": "Bearer"
+}
+```
+
+### 4. Get Current User
+```
+GET /auth/me
+
+Headers:
+Authorization: Bearer {access_token}
+
+Response:
+{
+  "id": 1,
+  "email": "user@example.com",
+  "username": "johndoe",
+  "full_name": "John Doe",
+  "created_at": "2024-01-01T00:00:00",
+  "is_active": true
+}
+```
+
+## Token Storage
+
+Tokens are stored in browser's localStorage:
+
+- `access_token`: Short-lived token (15-60 minutes)
+- `refresh_token`: Long-lived token (7-30 days)
+
+**Security Note**: For production, consider using httpOnly cookies for better security against XSS attacks.
+
+## Protected Routes
+
+To protect routes that require authentication:
 
 ```typescript
-// Dans src/lib/api.ts
+import { useAuth } from '../contexts/AuthContext'
+import { Navigate } from 'react-router-dom'
 
-async getProtectedData(): Promise<any> {
-  return this.makeRequest<any>('/protected/endpoint', {
-    method: 'GET',
-  }, true)  // ← requireAuth = true pour ajouter le token
+function ProtectedRoute({ children }) {
+  const { isAuthenticated, isLoading } = useAuth()
+  
+  if (isLoading) return <div>Loading...</div>
+  
+  return isAuthenticated ? children : <Navigate to="/login" />
 }
 ```
 
-## Changelog
+## Error Handling
 
-### Version 1.1.0 (Actuelle)
-- ✅ Ajout de l'authentification JWT
-- ✅ Rafraîchissement automatique des tokens
-- ✅ Gestion des erreurs 401/403
-- ✅ Redirection automatique en cas d'expiration
-- ✅ Support de l'historique des analyses
+The authentication system handles various error scenarios:
+
+### Login/Register Errors
+```typescript
+try {
+  await login(email, password)
+} catch (error) {
+  // Error messages:
+  // - "Incorrect email or password"
+  // - "Inactive user"
+  // - "Email already registered"
+  // - "Username already taken"
+}
+```
+
+### Token Refresh Errors
+```typescript
+// If token refresh fails:
+// 1. User is automatically logged out
+// 2. Tokens are cleared from localStorage
+// 3. No manual intervention needed
+```
+
+## Usage with Analysis History
+
+When a user is authenticated, analysis results are automatically saved to their history:
+
+```typescript
+// In App.tsx
+const handleAdaptCV = async (resumeFile: File, jobDescription: File | string) => {
+  const userId = isAuthenticated && user?.id ? user.id : undefined
+  const response = await apiService.uploadResumeAndJob(
+    resumeFile,
+    jobDescription,
+    'gpt-4o-mini',
+    userId  // Saves to history if provided
+  )
+}
+```
+
+## Security Best Practices
+
+1. **HTTPS Only**: Always use HTTPS in production
+2. **Token Expiration**: Keep access tokens short-lived
+3. **Refresh Token Rotation**: Implement refresh token rotation
+4. **CORS**: Configure CORS properly on backend
+5. **Rate Limiting**: Implement rate limiting on authentication endpoints
+6. **Password Requirements**: Enforce strong password policies
+7. **Account Lockout**: Lock accounts after failed login attempts
+
+## Testing
+
+### Manual Testing
+
+1. **Register a new account**
+   - Navigate to `/register`
+   - Fill in the form
+   - Should redirect to home after success
+
+2. **Login**
+   - Navigate to `/login`
+   - Enter credentials
+   - Should redirect to home after success
+
+3. **Authenticated Request**
+   - Login first
+   - Upload resume and job description
+   - Check that analysis is saved to history
+
+4. **Logout**
+   - Click logout button
+   - Should clear tokens and redirect to home
+
+5. **Token Refresh**
+   - Login and wait for token to expire
+   - Make an authenticated request
+   - Should automatically refresh and continue
+
+### With Mock Data
+
+For testing without a backend:
+
+```env
+REACT_APP_ENABLE_MOCK_DATA=true
+```
+
+This allows testing the UI without real authentication.
+
+## Troubleshooting
+
+### "Token expired" errors
+- Check token expiration times on backend
+- Verify refresh token logic is working
+- Check clock synchronization
+
+### Login always fails
+- Verify backend API URL is correct
+- Check CORS configuration
+- Verify credentials are correct
+- Check network console for errors
+
+### User data not loading
+- Verify `/auth/me` endpoint is working
+- Check that access token is being sent
+- Verify token is valid
+
+### Automatic logout
+- Check if refresh token is expired
+- Verify refresh token endpoint is working
+- Check localStorage for tokens
+
+## Integration Checklist
+
+- [ ] Backend authentication endpoints implemented
+- [ ] JWT tokens properly configured on backend
+- [ ] CORS enabled for frontend domain
+- [ ] Token expiration times set appropriately
+- [ ] Refresh token rotation implemented (recommended)
+- [ ] Password hashing on backend
+- [ ] Environment variables configured
+- [ ] HTTPS enabled in production
+- [ ] Error messages are user-friendly
+- [ ] Rate limiting enabled
+
+## Additional Resources
+
+- [JWT.io](https://jwt.io/) - JWT debugger and documentation
+- [OWASP Authentication Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html)
+- [React Router Protected Routes](https://reactrouter.com/en/main/start/tutorial#protected-routes)
 
 ---
 
-**Questions?** Vérifiez les logs de la console et les requêtes réseau dans DevTools!
-
+**Version**: 1.0.0  
+**Last Updated**: October 2024  
+**Status**: Production Ready

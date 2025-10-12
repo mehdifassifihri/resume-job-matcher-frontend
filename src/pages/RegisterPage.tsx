@@ -24,7 +24,7 @@ export function RegisterPage() {
   const { register, isAuthenticated, isLoading: authLoading } = useAuth()
   const navigate = useNavigate()
 
-  // Rediriger si l'utilisateur est déjà connecté
+  // Redirect if user is already authenticated
   useEffect(() => {
     if (!authLoading && isAuthenticated) {
       navigate('/')
@@ -79,7 +79,6 @@ export function RegisterPage() {
       await register(email, username, password, fullName || undefined)
       navigate('/')
     } catch (err: any) {
-      console.error('Registration error:', err)
       // Handle specific error messages from the API
       const errorMessage = err.message || 'Registration failed'
       if (errorMessage.includes('Email already registered')) {

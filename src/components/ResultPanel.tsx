@@ -27,12 +27,6 @@ export function ResultPanel({ score, coverage, recommendations, adaptedCV, isVis
   const [downloadType, setDownloadType] = useState<'docx' | 'pdf'>('docx')
   const [showTemplateSystem, setShowTemplateSystem] = useState(false)
 
-  // Debug structuredResume data
-  console.log('=== RESULT PANEL DEBUG ===')
-  console.log('structuredResume received:', structuredResume)
-  console.log('apiResponse:', apiResponse)
-  console.log('apiResponse?.structured_resume:', apiResponse?.structured_resume)
-
   const handleCopy = async () => {
     const success = await copyToClipboard(adaptedCV)
     if (success) {
@@ -125,7 +119,7 @@ export function ResultPanel({ score, coverage, recommendations, adaptedCV, isVis
         </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-8 mb-12">
-          {/* Score d'adéquation */}
+          {/* Match Score */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -513,7 +507,7 @@ export function ResultPanel({ score, coverage, recommendations, adaptedCV, isVis
           </Card>
         </motion.div>
 
-        {/* CV adapté preview */}
+        {/* Adapted CV preview */}
         <motion.div
           className="mb-12"
           initial={{ opacity: 0, y: 50 }}

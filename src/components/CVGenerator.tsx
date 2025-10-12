@@ -558,38 +558,6 @@ export function CVGenerator({ structuredResume, templateId }: CVGeneratorProps) 
     const phone = extractContactInfo(structuredResume, 'phone') || '+1 (555) 000-0000'
     const location = extractContactInfo(structuredResume, 'location') || 'Your Location'
     
-    console.log('=== CONTACT INFO DEBUG ===')
-    console.log('Full resume structure:', structuredResume)
-    console.log('Resume keys:', Object.keys(structuredResume))
-    
-    // Debug each field extraction
-    const debugField = (field: string) => {
-      const paths = [
-        { path: 'contact_info.' + field, value: (structuredResume as any).contact_info?.[field] },
-        { path: field, value: (structuredResume as any)[field] },
-        { path: 'contact.' + field, value: (structuredResume as any).contact?.[field] },
-        { path: 'personal_info.' + field, value: (structuredResume as any).personal_info?.[field] },
-        { path: 'profile.' + field, value: (structuredResume as any).profile?.[field] }
-      ]
-      console.log(`--- ${field.toUpperCase()} EXTRACTION ---`)
-      paths.forEach(({ path, value }) => {
-        console.log(`${path}:`, value, `(type: ${typeof value}, length: ${String(value).length})`)
-      })
-      return extractContactInfo(structuredResume, field)
-    }
-    
-    console.log('Final extracted values:')
-    console.log('Name:', debugField('name'))
-    console.log('Email:', debugField('email'))
-    console.log('Phone:', debugField('phone'))
-    console.log('Location:', debugField('location'))
-    
-    // Additional debug for name specifically
-    console.log('=== NAME DEBUG ===')
-    console.log('structuredResume.contact_info:', structuredResume.contact_info)
-    console.log('structuredResume.contact_info?.name:', structuredResume.contact_info?.name)
-    console.log('Final name value that will be used:', name)
-    
     cv = cv.replace(/{{NAME}}/g, name)
     cv = cv.replace(/{{EMAIL}}/g, email)
     cv = cv.replace(/{{PHONE}}/g, phone)
@@ -598,18 +566,9 @@ export function CVGenerator({ structuredResume, templateId }: CVGeneratorProps) 
     cv = cv.replace(/{{WEBSITE}}/g, 'Portfolio Website')
     
     // Handle Summary/Profile section conditionally
-    console.log('=== SUMMARY DEBUG ===')
-    console.log('Summary field:', structuredResume.summary)
-    console.log('Summary type:', typeof structuredResume.summary)
-    console.log('Summary length:', structuredResume.summary?.length)
-    console.log('Summary trimmed:', structuredResume.summary?.trim())
-    console.log('Summary exists and not empty:', !!(structuredResume.summary && structuredResume.summary.trim()))
-    
     if (structuredResume.summary && structuredResume.summary.trim()) {
-      console.log('Replacing SUMMARY with:', structuredResume.summary)
       cv = cv.replace(/{{SUMMARY}}/g, structuredResume.summary)
     } else {
-      console.log('Removing summary sections because no content')
       // Remove summary section if no summary (FAANG template)
       cv = cv.replace(/<section class="section" aria-label="Summary">[\s\S]*?<p>{{SUMMARY}}<\/p>[\s\S]*?<\/section>/g, '')
       // Remove any remaining SUMMARY placeholders
@@ -626,14 +585,6 @@ export function CVGenerator({ structuredResume, templateId }: CVGeneratorProps) 
     sectionConfig.forEach(config => {
       const data = structuredResume[config.key as keyof typeof structuredResume]
       const generator = sectionGenerators[templateId as keyof typeof sectionGenerators]?.[config.key as keyof typeof sectionGenerators['faang-path']]
-      
-      // Debug for skills section
-      if (config.key === 'skills') {
-        console.log('=== PROCESSING SKILLS SECTION ===')
-        console.log('Data:', data)
-        console.log('Generator:', generator)
-        console.log('Template:', templateId)
-      }
       
       // Check if we have data and generator
       if (data && generator) {
@@ -721,7 +672,6 @@ export function CVGenerator({ structuredResume, templateId }: CVGeneratorProps) 
         variant: "default"
       })
     } catch (error) {
-      console.error('Error opening print dialog:', error)
       toast({
         title: "Error",
         description: "Unable to open print dialog. Please try again.",

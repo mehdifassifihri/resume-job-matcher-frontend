@@ -78,9 +78,8 @@ function LandingPageContent() {
       setRecommendations(response.recommendations)
       setShowResults(true)
       
-      // Notify user if analysis was saved to history
+      // Analysis saved to history for authenticated users
       if (userId) {
-        console.log('Analysis saved to history for user:', userId)
         // Note: A toast notification could be added here if desired
       }
       
@@ -93,8 +92,6 @@ function LandingPageContent() {
       }, 100)
       
     } catch (error) {
-      console.error('API Error:', error)
-      
       if (error instanceof APIError) {
         setError(`API Error: ${error.message}`)
       } else {

@@ -51,7 +51,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setUser(userData)
       }
     } catch (error) {
-      console.error('Failed to load user:', error)
       authService.logout()
     } finally {
       setIsLoading(false)

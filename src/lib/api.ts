@@ -129,10 +129,10 @@ class APIService {
       if (response.status === 401 && requireAuth) {
         const { authService } = require('./auth')
         try {
-          // Rafraîchir le token
+          // Refresh the token
           const newAccessToken = await authService.refreshToken()
           
-          // Réessayer la requête avec le nouveau token
+          // Retry the request with the new token
           headers['Authorization'] = `Bearer ${newAccessToken}`
           
           response = await fetch(url, {
@@ -141,7 +141,7 @@ class APIService {
             headers,
           })
         } catch (refreshError) {
-          // Si le rafraîchissement échoue, déconnecter l'utilisateur
+          // If refresh fails, logout the user
           authService.logout()
           throw new APIError({
             message: 'Session expired. Please login again.',

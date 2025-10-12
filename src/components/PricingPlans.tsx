@@ -70,8 +70,7 @@ export function PricingPlans() {
         throw new Error('Price ID not found for this plan')
       }
     } catch (error) {
-      console.error('Error processing plan selection:', error)
-      alert('Une erreur est survenue lors du traitement de votre demande. Veuillez réessayer.')
+      alert('An error occurred while processing your request. Please try again.')
     } finally {
       setLoadingPlan(null)
     }

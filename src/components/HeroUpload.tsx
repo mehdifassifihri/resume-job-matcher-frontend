@@ -44,7 +44,7 @@ export function HeroUpload({ onCVUpload, onJobDescriptionUpload, onAdaptCV, isLo
         onJobDescriptionUpload(content)
       }
     } catch (error) {
-      console.error('Upload error:', error)
+      // Handle upload errors silently
     } finally {
       setIsUploading(false)
     }
