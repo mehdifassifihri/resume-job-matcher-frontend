@@ -9,7 +9,12 @@ import {
   AlertCircle,
   Loader2,
   Calendar,
-  Award
+  Award,
+  X,
+  Copy,
+  CheckCircle2,
+  Sparkles,
+  Briefcase
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 import { Button } from './ui/button'
@@ -323,87 +328,246 @@ export function AnalysisHistory() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-50 flex items-center justify-center p-4"
             onClick={() => setShowDetailModal(false)}
           >
             <motion.div
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
+              initial={{ scale: 0.9, y: 20, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.9, y: 20, opacity: 0 }}
+              transition={{ type: "spring", duration: 0.5 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
+              className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl rounded-3xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-hidden border border-white/30 dark:border-slate-700/30 relative"
             >
-              <CardHeader className="border-b">
-                <div className="flex items-center justify-between">
-                  <CardTitle>Analysis Details #{selectedAnalysis.id}</CardTitle>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setShowDetailModal(false)}
-                  >
-                    ✕
-                  </Button>
-                </div>
-                <div className="flex items-center gap-3 mt-2">
-                  <Badge className={getScoreBadgeColor(selectedAnalysis.score)}>
-                    Score: {selectedAnalysis.score}%
-                  </Badge>
-                  <Badge variant="outline">
-                    {new Date(selectedAnalysis.created_at).toLocaleString()}
-                  </Badge>
-                </div>
-              </CardHeader>
+              {/* Gradient Background Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-purple-500/5 pointer-events-none"></div>
+              
+              {/* Header */}
+              <div className="relative border-b border-slate-200 dark:border-slate-700 bg-gradient-to-r from-slate-50 to-white dark:from-slate-800 dark:to-slate-800">
+                <div className="p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center gap-4">
+                      <motion.div 
+                        className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center shadow-lg"
+                        animate={{ 
+                          boxShadow: [
+                            "0 10px 15px -3px rgba(59, 130, 246, 0.3)",
+                            "0 10px 15px -3px rgba(168, 85, 247, 0.3)",
+                            "0 10px 15px -3px rgba(59, 130, 246, 0.3)"
+                          ]
+                        }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                      >
+                        <Sparkles className="w-7 h-7 text-white" />
+                      </motion.div>
+                      <div>
+                        <h2 className="text-2xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-purple-900 dark:from-white dark:via-blue-100 dark:to-purple-100 bg-clip-text text-transparent">
+                          Analysis Details #{selectedAnalysis.id}
+                        </h2>
+                        <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                          Complete analysis overview and tailored resume
+                        </p>
+                      </div>
+                    </div>
+                    <motion.button
+                      whileHover={{ scale: 1.1, rotate: 90 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={() => setShowDetailModal(false)}
+                      className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 flex items-center justify-center text-slate-600 dark:text-slate-300 transition-colors"
+                    >
+                      <X className="w-5 h-5" />
+                    </motion.button>
+                  </div>
+                  
+                  {/* Metrics Row */}
+                  <div className="flex flex-wrap items-center gap-3">
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ delay: 0.2, type: "spring" }}
+                      className={`px-4 py-2 rounded-xl ${getScoreBadgeColor(selectedAnalysis.score)} font-semibold flex items-center gap-2 shadow-sm`}
+                    >
+                      <Award className="w-4 h-4" />
+                      Match Score: {selectedAnalysis.score}%
+                    </motion.div>
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ delay: 0.3, type: "spring" }}
+                      className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium flex items-center gap-2 shadow-sm"
+                    >
+                      <Calendar className="w-4 h-4" />
+                      {new Date(selectedAnalysis.created_at).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })}
+                    </motion.div>
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ delay: 0.4, type: "spring" }}
+                      className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium flex items-center gap-2 shadow-sm"
+                    >
+                      <Clock className="w-4 h-4" />
+                      {new Date(selectedAnalysis.created_at).toLocaleTimeString('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </motion.div>
+                  </div>
 
-              <CardContent className="p-6 overflow-y-auto max-h-[calc(90vh-180px)]">
+                  {/* Score Progress Bar */}
+                  <div className="mt-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs font-medium text-slate-600 dark:text-slate-400">
+                        Match Quality
+                      </span>
+                      <span className="text-xs font-bold text-slate-900 dark:text-white">
+                        {selectedAnalysis.score >= 80 ? 'Excellent' : selectedAnalysis.score >= 60 ? 'Good' : 'Fair'}
+                      </span>
+                    </div>
+                    <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2.5 overflow-hidden shadow-inner">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${selectedAnalysis.score}%` }}
+                        transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
+                        className={`h-full bg-gradient-to-r ${getScoreColor(selectedAnalysis.score)} shadow-lg`}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="relative p-6 overflow-y-auto max-h-[calc(90vh-300px)] custom-scrollbar">
                 <div className="space-y-6">
-                  {/* Job Description */}
-                  <div>
-                    <h3 className="text-lg font-semibold text-neutral-text mb-3 flex items-center gap-2">
-                      <FileText className="w-5 h-5" />
-                      Job Description
-                    </h3>
-                    <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
-                      <p className="text-sm text-neutral-text-secondary whitespace-pre-wrap">
+                  {/* Job Description Section */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="group"
+                  >
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
+                        <Briefcase className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                          Job Description
+                        </h3>
+                        <p className="text-xs text-slate-600 dark:text-slate-400">
+                          Original job posting requirements
+                        </p>
+                      </div>
+                    </div>
+                    <div className="bg-gradient-to-br from-slate-50 to-blue-50/30 dark:from-slate-900/50 dark:to-blue-900/10 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-all duration-300">
+                      <p className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap leading-relaxed">
                         {selectedAnalysis.job_text}
                       </p>
                     </div>
-                  </div>
+                  </motion.div>
 
-                  {/* Tailored Resume */}
-                  <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-lg font-semibold text-neutral-text flex items-center gap-2">
-                        <TrendingUp className="w-5 h-5" />
-                        Tailored Resume
-                      </h3>
-                      <Button
-                        variant="outline"
-                        size="sm"
+                  {/* Tailored Resume Section */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="group"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
+                          <FileText className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                            Tailored Resume
+                          </h3>
+                          <p className="text-xs text-slate-600 dark:text-slate-400">
+                            AI-optimized resume for this position
+                          </p>
+                        </div>
+                      </div>
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
                         onClick={() => handleCopyResume(selectedAnalysis.tailored_resume)}
+                        className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 font-medium flex items-center gap-2 transition-all shadow-sm hover:shadow-md"
                       >
-                        Copy to Clipboard
-                      </Button>
+                        <Copy className="w-4 h-4" />
+                        Copy
+                      </motion.button>
                     </div>
-                    <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
-                      <pre className="text-sm text-neutral-text-secondary whitespace-pre-wrap font-mono">
+                    <div className="bg-gradient-to-br from-slate-50 to-purple-50/30 dark:from-slate-900/50 dark:to-purple-900/10 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-all duration-300">
+                      <pre className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap font-mono leading-relaxed">
                         {selectedAnalysis.tailored_resume}
                       </pre>
                     </div>
+                  </motion.div>
+
+                  {/* Success Tips */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 }}
+                    className="bg-gradient-to-br from-green-50 to-emerald-50/50 dark:from-green-900/10 dark:to-emerald-900/5 p-5 rounded-2xl border border-green-200 dark:border-green-800"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-green-500 flex items-center justify-center flex-shrink-0 shadow-md">
+                        <CheckCircle2 className="w-5 h-5 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-green-900 dark:text-green-300 mb-2">
+                          Pro Tips for Your Application
+                        </h4>
+                        <ul className="text-sm text-green-800 dark:text-green-400 space-y-1.5">
+                          <li className="flex items-start gap-2">
+                            <span className="text-green-500 mt-0.5">•</span>
+                            <span>Review and personalize the tailored resume before submission</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-green-500 mt-0.5">•</span>
+                            <span>Ensure all information is accurate and up-to-date</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-green-500 mt-0.5">•</span>
+                            <span>Include relevant achievements and metrics when possible</span>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </motion.div>
+                </div>
+              </div>
+
+              {/* Footer Actions */}
+              <div className="relative border-t border-slate-200 dark:border-slate-700 p-6 bg-gradient-to-r from-slate-50 to-white dark:from-slate-800 dark:to-slate-800">
+                <div className="flex items-center justify-between gap-4">
+                  <div className="text-xs text-slate-600 dark:text-slate-400">
+                    Analysis ID: #{selectedAnalysis.id}
+                  </div>
+                  <div className="flex gap-3">
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => setShowDetailModal(false)}
+                      className="px-6 py-2.5 rounded-xl bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 font-medium transition-colors"
+                    >
+                      Close
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => handleDownload(selectedAnalysis)}
+                      className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold flex items-center gap-2 shadow-lg hover:shadow-xl transition-all"
+                    >
+                      <Download className="w-4 h-4" />
+                      Download Resume
+                    </motion.button>
                   </div>
                 </div>
-              </CardContent>
-
-              <div className="border-t p-4 flex justify-end gap-3">
-                <Button
-                  variant="outline"
-                  onClick={() => setShowDetailModal(false)}
-                >
-                  Close
-                </Button>
-                <Button onClick={() => handleDownload(selectedAnalysis)}>
-                  <Download className="w-4 h-4 mr-2" />
-                  Download
-                </Button>
               </div>
             </motion.div>
           </motion.div>
