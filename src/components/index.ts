@@ -1,6 +1,5 @@
 // Export all components
 export { CVUploadBlock } from './CVUploadBlock'
-export { AutoApplyPreferences } from './AutoApplyPreferences'
 export { ConnectionsConsent } from './ConnectionsConsent'
 export { Header } from './Header'
 export { HeroUpload } from './HeroUpload'

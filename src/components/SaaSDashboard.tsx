@@ -49,9 +49,7 @@ export function SaaSDashboard() {
   const [preferences, setPreferences] = useState({
     targetPosition: 'Software Engineer',
     techStack: ['React', 'TypeScript', 'Node.js'],
-    experienceLevel: 'Senior',
-    autoApplyFrequency: '2x/week',
-    enableAutoApply: true
+    experienceLevel: 'Senior'
   })
 
   const [selectedTechStack, setSelectedTechStack] = useState<string[]>(['React', 'TypeScript', 'Node.js'])
@@ -168,7 +166,7 @@ export function SaaSDashboard() {
     }
   ]
 
-  // Auto Apply Dashboard final après onboarding
+  // Main Dashboard after onboarding complete
   if (onboardingComplete) {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-900 relative overflow-hidden font-poppins">
@@ -198,7 +196,7 @@ export function SaaSDashboard() {
                   <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-purple-900 dark:from-white dark:via-blue-100 dark:to-purple-100 bg-clip-text text-transparent">
                     Dashboard
                   </h1>
-                  <p className="text-slate-600 dark:text-slate-400">Your auto-apply system is ready!</p>
+                  <p className="text-slate-600 dark:text-slate-400">Manage your profile and preferences</p>
                 </div>
               </div>
               <div className="flex items-center gap-4">
@@ -209,11 +207,11 @@ export function SaaSDashboard() {
                   className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 rounded-xl transition-all duration-300 font-medium"
                 >
                   <Home className="w-4 h-4" />
-                  Accueil
+                  Home
                 </motion.button>
                 <div className="flex items-center gap-2 bg-green-50 dark:bg-green-900/20 px-4 py-2 rounded-xl">
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-green-700 dark:text-green-400 font-medium">Auto-Apply Active</span>
+                  <span className="text-green-700 dark:text-green-400 font-medium">Profile Active</span>
                 </div>
               </div>
             </div>
@@ -229,16 +227,9 @@ export function SaaSDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-                  {preferences.targetPosition} | {preferences.autoApplyFrequency} | Stack {preferences.techStack.join(', ')}
+                  {preferences.targetPosition} | Stack: {preferences.techStack.join(', ')}
                 </h2>
-                <p className="text-slate-600 dark:text-slate-400">Next auto-apply run: Tomorrow at 9:00 AM</p>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="text-slate-600 dark:text-slate-400">Auto-Apply</span>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" checked={preferences.enableAutoApply} className="sr-only peer" />
-                  <div className="w-12 h-6 bg-slate-300 dark:bg-slate-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-green-500 peer-checked:to-emerald-500"></div>
-                </label>
+                <p className="text-slate-600 dark:text-slate-400">Manage your job preferences</p>
               </div>
             </div>
           </motion.div>
@@ -310,15 +301,15 @@ export function SaaSDashboard() {
             </div>
             <div>
               <h2 className="text-xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-purple-900 dark:from-white dark:via-blue-100 dark:to-purple-100 bg-clip-text text-transparent">
-                Auto Apply 
+                Profile Dashboard
               </h2>
               <p className="text-slate-600 dark:text-slate-400 text-sm">
-              Dashboard
+              Manage Your Settings
               </p>
             </div>
           </div>
           
-          {/* Bouton Retour à l'accueil */}
+          {/* Back to Home Button */}
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
@@ -326,7 +317,7 @@ export function SaaSDashboard() {
             className="w-full flex items-center gap-3 px-4 py-2.5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-700/50 rounded-xl transition-all duration-300 text-sm font-medium"
           >
             <ArrowLeft className="w-4 h-4" />
-            Retour à l'accueil
+            Back to Home
           </motion.button>
         </div>
         
@@ -705,48 +696,6 @@ export function SaaSDashboard() {
                           <option value="Mid">Mid</option>
                           <option value="Senior">Senior</option>
                         </select>
-                      </motion.div>
-
-                      {/* Auto-apply Frequency */}
-                      <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.6, delay: 0.6 }}
-                      >
-                        <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">
-                          Auto-apply Frequency
-                        </label>
-                        <select
-                          value={preferences.autoApplyFrequency}
-                          onChange={(e) => handlePreferencesChange('autoApplyFrequency', e.target.value)}
-                          className="w-full px-4 py-3 bg-white/50 dark:bg-slate-700/50 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-400 transition-all duration-300 backdrop-blur-sm"
-                        >
-                          <option value="Once a week">Once a week</option>
-                          <option value="2x/week">2x/week</option>
-                          <option value="3x/week">3x/week</option>
-                        </select>
-                      </motion.div>
-
-                      {/* Enable Auto-Apply Toggle */}
-                      <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.6, delay: 0.7 }}
-                        className="flex items-center justify-between p-6 bg-gradient-to-r from-blue-50/50 to-purple-50/50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-2xl border border-blue-200/30 dark:border-blue-700/30"
-                      >
-                        <div>
-                          <h3 className="font-semibold text-slate-900 dark:text-white">Enable Auto-Apply</h3>
-                          <p className="text-sm text-slate-600 dark:text-slate-400">Automatically apply to matching job opportunities</p>
-                        </div>
-                        <label className="relative inline-flex items-center cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={preferences.enableAutoApply}
-                            onChange={(e) => handlePreferencesChange('enableAutoApply', e.target.checked)}
-                            className="sr-only peer"
-                          />
-                          <div className="w-12 h-6 bg-slate-300 dark:bg-slate-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-blue-500 peer-checked:to-purple-500"></div>
-                        </label>
                       </motion.div>
 
                       {/* Save Button */}

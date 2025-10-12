@@ -457,11 +457,11 @@ export function ConnectionsConsent(_props: ConnectionsConsentProps) {
               />
               <div className="space-y-2">
                 <Label htmlFor="consent" className="text-sm font-medium cursor-pointer text-slate-700 dark:text-slate-300">
-                  🤖 Consentement explicite pour l'auto-apply
+                  🤖 Explicit consent for connections
                 </Label>
                 <p className="text-sm text-slate-600 dark:text-slate-400">
-                  J'autorise l'envoi automatique de candidatures selon mes filtres configurés.
-                  Je comprends que le système appliquera uniquement aux offres correspondant à mes critères.
+                  I authorize the connection and integration with my configured services.
+                  I understand that the system will only access data according to my configured criteria.
                 </p>
               </div>
             </div>
@@ -476,7 +476,7 @@ export function ConnectionsConsent(_props: ConnectionsConsentProps) {
                 <div className="flex items-center gap-2 text-blue-800 dark:text-blue-300">
                   <CheckCircle className="w-4 h-4" />
                   <span className="text-sm font-medium">
-                    ✅ Consentement enregistré - Auto-apply activé
+                    ✅ Consent recorded - Connections active
                   </span>
                 </div>
               </motion.div>
