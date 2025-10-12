@@ -473,7 +473,7 @@ export function SaaSDashboard() {
                       
                       <motion.div
                         whileHover={{ scale: 1.02 }}
-                        className="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-2xl p-8 mb-6 hover:border-blue-400 dark:hover:border-blue-500 transition-all duration-300 bg-slate-50/50 dark:bg-slate-700/30"
+                        className="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-2xl p-8 mb-6 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-all duration-300 bg-slate-50/50 dark:bg-slate-700/30"
                       >
                         <input
                           type="file"
